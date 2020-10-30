@@ -5,7 +5,6 @@
     <ClInclude Include="Src\Geo\SpriteAni.h" />
     <ClInclude Include="Src\Geo\Vertex.h" />
     <ClInclude Include="Src\Core.h" />
-    <ClInclude Include="Src\Engine.h" />
     <ClInclude Include="Src\Global\GlobalFuncs.h" />
     <ClInclude Include="Src\Global\GlobalStructs.h" />
     <ClInclude Include="Src\Global\GlobalVars.h" />
