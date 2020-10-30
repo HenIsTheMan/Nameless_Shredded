@@ -18,9 +18,6 @@ public:
 	void ForwardRender();
 private:
 	Cam cam;
-	ISoundEngine* soundEngine;
-	ISound* music;
-	ISoundEffectControl* soundFX;
 
 	enum struct MeshType{
 		Quad = 0,

@@ -8,7 +8,6 @@
 #include <GLM/gtc/type_ptr.hpp>
 #include <GLM/gtx/color_space.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <IRRKLANG/irrKlang.h>
 
 #include <functional>
 #include <fstream>
@@ -18,8 +17,6 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
-
-using namespace irrklang;
 
 #define STR(text) #text
 

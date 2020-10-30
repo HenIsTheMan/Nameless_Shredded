@@ -14,9 +14,6 @@ glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
 MyScene::MyScene():
 	cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f), 0.f, 150.f),
-	soundEngine(nullptr),
-	music(nullptr),
-	soundFX(nullptr),
 	meshes{
 		new Mesh(Mesh::MeshType::Quad, GL_TRIANGLES, {
 			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
@@ -81,38 +78,10 @@ MyScene::~MyScene(){
 			meshes[i] = nullptr;
 		}
 	}
-	if(music){
-		music->drop();
-	}
-	if(soundEngine){
-		soundEngine->drop();
-	}
 }
 
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
-
-	soundEngine = createIrrKlangDevice(ESOD_AUTO_DETECT, ESEO_MULTI_THREADED | ESEO_LOAD_PLUGINS | ESEO_USE_3D_BUFFERS | ESEO_PRINT_DEBUG_INFO_TO_DEBUGGER);
-	if(!soundEngine){
-		(void)puts("Failed to init soundEngine!\n");
-	}
-	//soundEngine->play2D("Audio/Music/YellowCafe.mp3", true);
-
-	music = soundEngine->play3D("Audio/Music/YellowCafe.mp3", vec3df(0.f, 0.f, 0.f), true, true, true, ESM_AUTO_DETECT, true);
-	if(music){
-		music->setMinDistance(5.f);
-		music->setVolume(0);
-
-		soundFX = music->getSoundEffectControl();
-		if(!soundFX){
-			(void)puts("No soundFX support!\n");
-		}
-	} else{
-		(void)puts("Failed to init music!\n");
-	}
-
-	soundEngine->setRolloffFactor(10.f);
-	soundEngine->setDopplerEffectParameters(10.f, 10.f);
 
 	for(int i = 0; i < 99; ++i){
 		PushModel({
@@ -144,7 +113,6 @@ void MyScene::Update(float dt){
 
 	const glm::vec3& camWorldSpacePos = cam.GetPos();
 	const glm::vec3& camFront = cam.CalcFront();
-	soundEngine->setListenerPosition(vec3df(camWorldSpacePos.x, camWorldSpacePos.y, camWorldSpacePos.z), vec3df(camFront.x, camFront.y, camFront.z));
 
 	spotlights[0]->ambient = glm::vec3(.05f);
 	spotlights[0]->diffuse = glm::vec3(.8f);
@@ -176,25 +144,6 @@ void MyScene::Update(float dt){
 	//		meshes[(int)MeshType::Quad]->SetModelMat(GetTopModel(), i);
 	//	PopModel();
 	//}
-
-	if(soundFX){
-		if(Key(GLFW_KEY_I) && distortionBT <= elapsedTime){
-			soundFX->isDistortionSoundEffectEnabled() ? soundFX->disableDistortionSoundEffect() : (void)soundFX->enableDistortionSoundEffect();
-			distortionBT = elapsedTime + .5f;
-		}
-		if(Key(GLFW_KEY_O) && echoBT <= elapsedTime){
-			soundFX->isEchoSoundEffectEnabled() ? soundFX->disableEchoSoundEffect() : (void)soundFX->enableEchoSoundEffect();
-			echoBT = elapsedTime + .5f;
-		}
-		if(Key(GLFW_KEY_P) && wavesReverbBT <= elapsedTime){
-			soundFX->isWavesReverbSoundEffectEnabled() ? soundFX->disableWavesReverbSoundEffect() : (void)soundFX->enableWavesReverbSoundEffect();
-			wavesReverbBT = elapsedTime + .5f;
-		}
-		if(Key(GLFW_KEY_L) && resetSoundFXBT <= elapsedTime){
-			soundFX->disableAllEffects();
-			resetSoundFXBT = elapsedTime + .5f;
-		}
-	}
 }
 
 void MyScene::GeoRenderPass(){
@@ -415,10 +364,6 @@ void MyScene::ForwardRender(){
 	PopModel();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
-
-	if(music && music->getIsPaused()){
-		music->setIsPaused(false);
-	}
 }
 
 glm::mat4 MyScene::Translate(const glm::vec3& translate){
