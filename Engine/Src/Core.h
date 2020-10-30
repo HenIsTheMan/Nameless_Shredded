@@ -21,7 +21,6 @@
 #define STR(text) #text
 
 #pragma comment(lib, "glfw3.lib")
-#pragma comment(lib, "irrKlang.lib")
 
 typedef const char* cstr;
 typedef unsigned int uint;
