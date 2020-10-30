@@ -1,7 +1,6 @@
 #include "MyScene.h"
 
 #include "Core.h"
-#include "Vendor/stb_image.h"
 #include "Geo/SpriteAni.h"
 #include "Math/Pseudorand.h"
 #include "Global/GlobalFuncs.h"

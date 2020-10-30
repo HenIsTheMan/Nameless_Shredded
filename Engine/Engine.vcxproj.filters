@@ -22,10 +22,10 @@
     <ClCompile Include="Src\Geo\SpriteAni.cpp" />
     <ClCompile Include="Src\Global\GlobalFuncs.cpp" />
     <ClCompile Include="Src\Graphics\ShaderProg.cpp" />
-    <ClCompile Include="Src\Vendor\glad.c" />
     <ClCompile Include="Src\Plat\Win\App\Scene\Cam\Cam.cpp" />
     <ClCompile Include="Src\Plat\Win\App\Scene\Scene.cpp" />
     <ClCompile Include="Src\Plat\Win\App\App.cpp" />
+    <ClCompile Include="Src\glad.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Math\Pseudorand.inl" />
