@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Src\Client.cpp" />
+    <ClCompile Include="Src\Scenes\MyScene.cpp" />
+    <ClCompile Include="Src\Scenes\YesScene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Blur.fs" />
+    <None Include="Shaders\Forward.fs" />
+    <None Include="Shaders\Forward.vs" />
+    <None Include="Shaders\GeoPass.fs" />
+    <None Include="Shaders\GeoPass.vs" />
+    <None Include="Shaders\LightingPass.fs" />
+    <None Include="Shaders\Normals.fs" />
+    <None Include="Shaders\Normals.gs" />
+    <None Include="Shaders\Normals.vs" />
+    <None Include="Shaders\Quad.vs" />
+    <None Include="Shaders\Screen.fs" />
+    <None Include="Shaders\Text.fs" />
+    <None Include="Shaders\Text.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Scenes\MyScene.h" />
+    <ClInclude Include="Src\Scenes\YesScene.h" />
+  </ItemGroup>
+</Project>
