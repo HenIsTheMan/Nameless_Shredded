@@ -9,8 +9,6 @@
 #include <GLM/gtx/color_space.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <IRRKLANG/irrKlang.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 #include <functional>
 #include <fstream>
@@ -25,7 +23,6 @@ using namespace irrklang;
 
 #define STR(text) #text
 
-#pragma comment(lib, "freetype.lib")
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "irrKlang.lib")
 

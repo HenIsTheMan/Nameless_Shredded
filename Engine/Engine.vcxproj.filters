@@ -10,7 +10,6 @@
     <ClInclude Include="Src\Global\GlobalVars.h" />
     <ClInclude Include="Src\Graphics\Light.h" />
     <ClInclude Include="Src\Graphics\ShaderProg.h" />
-    <ClInclude Include="Src\Graphics\TextChief.h" />
     <ClInclude Include="Src\Vendor\stb_image.h" />
     <ClInclude Include="Src\Math\Pseudorand.h" />
     <ClInclude Include="Src\Plat\Win\App\Scene\Scene.h" />
@@ -23,7 +22,6 @@
     <ClCompile Include="Src\Geo\SpriteAni.cpp" />
     <ClCompile Include="Src\Global\GlobalFuncs.cpp" />
     <ClCompile Include="Src\Graphics\ShaderProg.cpp" />
-    <ClCompile Include="Src\Graphics\TextChief.cpp" />
     <ClCompile Include="Src\Vendor\glad.c" />
     <ClCompile Include="Src\Plat\Win\App\Scene\Cam\Cam.cpp" />
     <ClCompile Include="Src\Plat\Win\App\Scene\Scene.cpp" />

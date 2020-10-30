@@ -4,7 +4,6 @@
 #include "Geo/Mesh.h"
 #include "Graphics/Light.h"
 #include "Graphics/ShaderProg.h"
-#include "Graphics/TextChief.h"
 
 class MyScene final{
 public:
@@ -22,7 +21,6 @@ private:
 	ISoundEngine* soundEngine;
 	ISound* music;
 	ISoundEffectControl* soundFX;
-	TextChief textChief;
 
 	enum struct MeshType{
 		Quad = 0,

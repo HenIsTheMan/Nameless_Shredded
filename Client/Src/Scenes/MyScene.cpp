@@ -4,6 +4,7 @@
 #include "Vendor/stb_image.h"
 #include "Geo/SpriteAni.h"
 #include "Math/Pseudorand.h"
+#include "Global/GlobalFuncs.h"
 
 extern float angularFOV;
 extern int winWidth;
@@ -412,34 +413,6 @@ void MyScene::ForwardRender(){
 		forwardSP.Set1i("useCustomColour", 0);
 		forwardSP.Set1i("noNormals", 0);
 	PopModel();
-
-	textChief.RenderText(textSP, {
-		"AA",
-		(float)winWidth,
-		225.f,
-		1.f,
-		glm::vec4(1.f),
-		0,
-		TextChief::TextAlignment::Right
-	});
-	textChief.RenderText(textSP, {
-		"AAAA",
-		0.0f,
-		150.f,
-		1.f,
-		glm::vec4(1.f),
-		0,
-		TextChief::TextAlignment::Left
-	});
-	textChief.RenderText(textSP, {
-		"AAAAAA",
-		(float)winWidth / 2.f,
-		75.f,
-		1.f,
-		glm::vec4(1.f),
-		0,
-		TextChief::TextAlignment::Center
-	});
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 
