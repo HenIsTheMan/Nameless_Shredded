@@ -1,9 +1,8 @@
 #include "MyScene.h"
 
+#include "Core.h"
 #include "Vendor/stb_image.h"
-#include "Geo/Model.h"
 #include "Geo/SpriteAni.h"
-#include "Geo/Terrain.h"
 #include "Math/Pseudorand.h"
 
 extern float angularFOV;
@@ -33,19 +32,6 @@ MyScene::MyScene():
 			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
 		}),
 		new SpriteAni(4, 8),
-		new Terrain("Imgs/hMap.raw", 8.f, 8.f),
-	},
-	models{
-		new Model("ObjsAndMtls/Skydome.obj", {
-			aiTextureType_DIFFUSE,
-		}),
-		new Model("ObjsAndMtls/nanosuit.obj", {
-			aiTextureType_DIFFUSE,
-			aiTextureType_SPECULAR,
-			aiTextureType_EMISSIVE,
-			aiTextureType_AMBIENT,
-			//aiTextureType_HEIGHT,
-		}),
 	},
 	blurSP{"Shaders/Quad.vs", "Shaders/Blur.fs"},
 	forwardSP{"Shaders/Forward.vs", "Shaders/Forward.fs"},
@@ -94,12 +80,6 @@ MyScene::~MyScene(){
 			meshes[i] = nullptr;
 		}
 	}
-	for(int i = 0; i < (int)ModelType::Amt; ++i){
-		if(models[i]){
-			delete models[i];
-			models[i] = nullptr;
-		}
-	}
 	if(music){
 		music->drop();
 	}
@@ -141,20 +121,10 @@ bool MyScene::Init(){
 			meshes[(int)MeshType::Quad]->AddModelMat(GetTopModel());
 		PopModel();
 	}
-	for(int i = 0; i < 999; ++i){
-		PushModel({
-			Translate(glm::vec3(PseudorandMinMax(-100.f, 100.f), PseudorandMinMax(-100.f, 100.f), -5.f)),
-			Rotate(glm::vec4(0.f, 1.f, 0.f, -45.f)),
-		});
-			models[(int)ModelType::Suit]->AddModelMatForAll(GetTopModel());
-		PopModel();
-	}
 
 	meshes[(int)MeshType::SpriteAni]->AddTexMap({"Imgs/Fire.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->AddAni("FireSpriteAni", 0, 32);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->Play("FireSpriteAni", -1, .5f);
-
-	meshes[(int)MeshType::Terrain]->AddTexMap({"Imgs/GrassGround.jpg", Mesh::TexType::Diffuse, 0});
 
 	spotlights.emplace_back(CreateLight(LightType::Spot));
 
@@ -245,32 +215,6 @@ void MyScene::GeoRenderPass(){
 	glDepthFunc(GL_LESS);
 
 	geoPassSP.SetMat4fv("PV", &(projection * view)[0][0]);
-
-	///Terrain
-	PushModel({
-		Scale(glm::vec3(500.f, 100.f, 500.f)),
-	});
-		meshes[(int)MeshType::Terrain]->SetModel(GetTopModel());
-		meshes[(int)MeshType::Terrain]->Render(geoPassSP);
-	PopModel();
-
-	///Nanosuits
-	PushModel({
-		Translate(glm::vec3(0.f, 200.f, 0.f)),
-		Rotate(glm::vec4(0.f, 1.f, 0.f, 0.f)),
-		Scale(glm::vec3(5.f)),
-	});
-		models[(int)ModelType::Suit]->SetModelForAll(GetTopModel());
-		models[(int)ModelType::Suit]->Render(geoPassSP);
-	PopModel();
-	PushModel({
-		Translate(glm::vec3(0.f, 100.f, 0.f)),
-		Rotate(glm::vec4(0.f, 1.f, 0.f, 0.f)),
-		Scale(glm::vec3(.5f)),
-	});
-		models[(int)ModelType::Suit]->SetModelForAll(GetTopModel());
-		models[(int)ModelType::Suit]->InstancedRender(geoPassSP);
-	PopModel();
 
 	///Shapes
 	PushModel({

@@ -2,9 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="Src\Geo\Mesh.h" />
-    <ClInclude Include="Src\Geo\Model.h" />
     <ClInclude Include="Src\Geo\SpriteAni.h" />
-    <ClInclude Include="Src\Geo\Terrain.h" />
     <ClInclude Include="Src\Geo\Vertex.h" />
     <ClInclude Include="Src\Core.h" />
     <ClInclude Include="Src\Engine.h" />
@@ -23,9 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Geo\Mesh.cpp" />
-    <ClCompile Include="Src\Geo\Model.cpp" />
     <ClCompile Include="Src\Geo\SpriteAni.cpp" />
-    <ClCompile Include="Src\Geo\Terrain.cpp" />
     <ClCompile Include="Src\Global\GlobalFuncs.cpp" />
     <ClCompile Include="Src\Graphics\ShaderProg.cpp" />
     <ClCompile Include="Src\Graphics\TextChief.cpp" />

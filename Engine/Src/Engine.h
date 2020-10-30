@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Geo/Mesh.h"
-#include "Geo/Model.h"
 #include "Geo/SpriteAni.h"
-#include "Geo/Terrain.h"
 
 #include "Global/GlobalFuncs.h"
 

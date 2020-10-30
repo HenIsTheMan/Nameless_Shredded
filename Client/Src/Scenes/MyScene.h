@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Plat/Win/App/Scene/Cam/Cam.h"
-#include "Geo/Model.h"
+#include "Geo/Mesh.h"
 #include "Graphics/Light.h"
 #include "Graphics/ShaderProg.h"
 #include "Graphics/TextChief.h"
@@ -30,17 +30,9 @@ private:
 		Sphere,
 		Cylinder,
 		SpriteAni,
-		Terrain,
 		Amt
 	};
 	Mesh* meshes[(int)MeshType::Amt];
-
-	enum struct ModelType{
-		Skydome = 0,
-		Suit,
-		Amt
-	};
-	Model* models[(int)ModelType::Amt];
 
 	ShaderProg blurSP;
 	ShaderProg forwardSP;
