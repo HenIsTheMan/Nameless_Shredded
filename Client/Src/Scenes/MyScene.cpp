@@ -94,7 +94,7 @@ void MyScene::Update(float dt){
 	}
 	cam.Update(dt, GLFW_KEY_Q, GLFW_KEY_E, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
 	view = cam.LookAt();
-	projection = glm::perspective(glm::radians(angularFOV), cam.GetAspectRatio(), .1f, 9999.f);
+	projection = glm::ortho(0.0f, (float)winWidth, 0.0f, (float)winHeight, 0.0f, 99999.0f);
 
 	const glm::vec3& camWorldSpacePos = cam.GetPos();
 	const glm::vec3& camFront = cam.CalcFront();
@@ -120,15 +120,6 @@ void MyScene::Update(float dt){
 		glPolygonMode(GL_FRONT_AND_BACK, polyMode);
 		polyModeBT = elapsedTime + .5f;
 	}
-
-	//for(int i = 0; i < 99999; ++i){
-	//	PushModel({
-	//		Translate(glm::vec3(PseudorandMinMax(-2000.f, 2000.f), PseudorandMinMax(-2000.f, 2000.f), -5.f)),
-	//		Rotate(glm::vec4(0.f, 1.f, 0.f, -45.f)),
-	//	});
-	//		meshes[(int)MeshType::Quad]->SetModelMat(GetTopModel(), i);
-	//	PopModel();
-	//}
 }
 
 void MyScene::ForwardRender(){
@@ -178,7 +169,7 @@ void MyScene::ForwardRender(){
 
 	///SpriteAni
 	PushModel({
-		Translate(glm::vec3(0.f, 50.f, 0.f)),
+		Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
 		Scale(glm::vec3(20.f, 40.f, 20.f)),
 	});
 		forwardSP.Set1i("noNormals", 1);
