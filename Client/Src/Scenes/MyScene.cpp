@@ -12,7 +12,7 @@ extern int winHeight;
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
 MyScene::MyScene():
-	grid(Grid<float>(5.0f, 5.0f, 10, 10)),
+	grid(Grid<float>(50.0f, 50.0f, 10, 10)),
 	meshes{
 		new Mesh(Mesh::MeshType::Line, GL_LINES, {
 		}),
@@ -170,18 +170,40 @@ void MyScene::ForwardRender(){
 	forwardSP.SetMat4fv("PV", &(projection * view)[0][0]);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	modelStack.PushModel({
-		modelStack.Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
-		modelStack.Scale(glm::vec3(winHeight, winHeight, 1.0f)),
-	});
-		forwardSP.Set1i("noNormals", 1);
-		forwardSP.Set1i("useCustomColour", 1);
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
+	forwardSP.Set1i("noNormals", 1);
+	forwardSP.Set1i("useCustomColour", 1);
+	forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
+
+	const float gridWidth = (float)grid.GetCols() * grid.GetCellWidth();
+	const float gridHeight = (float)grid.GetRows() * grid.GetCellHeight();
+
+	const int amtOfHorizLines = grid.GetRows() + 1;
+	const float yOffset = (winHeight - gridHeight) * 0.5f;
+	for(int i = 0; i < amtOfHorizLines; ++i){
+		modelStack.PushModel({
+			modelStack.Translate(glm::vec3(winWidth / 2.0f, yOffset + grid.GetCellHeight() * (float)i, 0.0f)),
+			modelStack.Scale(glm::vec3(gridWidth, 1.0f, 1.0f)),
+		});
+			meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::Line]->Render(forwardSP);
+		modelStack.PopModel();
+	}
+
+	const int amtOfVertLines = grid.GetCols() + 1;
+	const float xOffset = (winWidth - gridWidth) * 0.5f;
+	for(int i = 0; i < amtOfVertLines; ++i){
+		modelStack.PushModel({
+			modelStack.Translate(glm::vec3(xOffset + grid.GetCellWidth() * (float)i, winHeight / 2.0f, 0.0f)),
+			modelStack.Rotate(glm::vec4(0.0f, 0.0f, 1.0f, -90.0f)),
+			modelStack.Scale(glm::vec3(gridHeight, 1.0f, 1.0f)),
+		});
 		meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
 		meshes[(int)MeshType::Line]->Render(forwardSP);
-		forwardSP.Set1i("useCustomColour", 0);
-		forwardSP.Set1i("noNormals", 0);
-	modelStack.PopModel();
+		modelStack.PopModel();
+	}
+
+	forwardSP.Set1i("useCustomColour", 0);
+	forwardSP.Set1i("noNormals", 0);
 
 	/////SpriteAni
 	modelStack.PushModel({
