@@ -8,6 +8,8 @@
 extern float angularFOV;
 extern int winWidth;
 extern int winHeight;
+extern float lastX;
+extern float lastY;
 
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
@@ -71,7 +73,7 @@ MyScene::~MyScene(){
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
-	glLineWidth(10.f);
+	glLineWidth(5.5f);
 
 	for(int i = 0; i < 99; ++i){
 		modelStack.PushModel({
@@ -174,8 +176,8 @@ void MyScene::ForwardRender(){
 
 	forwardSP.Set1i("noNormals", 1);
 	forwardSP.Set1i("useCustomColour", 1);
-	forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
 
+	///Render grid
 	const float gridWidth = (float)grid.GetCols() * grid.GetCellWidth();
 	const float gridHeight = (float)grid.GetRows() * grid.GetCellHeight();
 
@@ -186,6 +188,7 @@ void MyScene::ForwardRender(){
 			modelStack.Translate(glm::vec3(winWidth / 2.0f, yOffset + grid.GetCellHeight() * (float)i, 0.0f)),
 			modelStack.Scale(glm::vec3(gridWidth, 1.0f, 1.0f)),
 		});
+			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
 			meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
 			meshes[(int)MeshType::Line]->Render(forwardSP);
 		modelStack.PopModel();
@@ -199,26 +202,33 @@ void MyScene::ForwardRender(){
 			modelStack.Rotate(glm::vec4(0.0f, 0.0f, 1.0f, -90.0f)),
 			modelStack.Scale(glm::vec3(gridHeight, 1.0f, 1.0f)),
 		});
-		meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
-		meshes[(int)MeshType::Line]->Render(forwardSP);
+			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
+			meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::Line]->Render(forwardSP);
 		modelStack.PopModel();
 	}
+
+	///Render translucent block
+	modelStack.PushModel({
+		modelStack.Translate(glm::vec3(lastX, winHeight - lastY, 0.0f)),
+		modelStack.Scale(glm::vec3(grid.GetCellWidth() * 0.5f, grid.GetCellHeight() * 0.5f, 1.0f)),
+	});
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.1f));
+		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+		meshes[(int)MeshType::Quad]->Render(forwardSP);
+	modelStack.PopModel();
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);
 
-	/////SpriteAni
+	///Render SpriteAni
 	modelStack.PushModel({
 		modelStack.Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
 		modelStack.Scale(glm::vec3(20.0f, 40.0f, 20.0f)),
 	});
-		forwardSP.Set1i("noNormals", 1);
-		forwardSP.Set1i("useCustomColour", 1);
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
+		forwardSP.Set4fv("customColour", glm::vec4(1.0f));
 		meshes[(int)MeshType::SpriteAni]->SetModel(modelStack.GetTopModel());
 		meshes[(int)MeshType::SpriteAni]->Render(forwardSP);
-		forwardSP.Set1i("useCustomColour", 0);
-		forwardSP.Set1i("noNormals", 0);
 	modelStack.PopModel();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
