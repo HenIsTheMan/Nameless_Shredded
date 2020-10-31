@@ -11,31 +11,20 @@ public:
 	~MyScene();
 	bool Init();
 	void Update(float dt);
-	void GeoRenderPass();
-	void LightingRenderPass(const uint& posTexRefID, const uint& coloursTexRefID, const uint& normalsTexRefID, const uint& specTexRefID, const uint& reflectionTexRefID);
-	void BlurRender(const uint& brightTexRefID, const bool& horizontal);
-	void DefaultRender(const uint& screenTexRefID);
 	void ForwardRender();
+	void DefaultRender(const uint& screenTexRefID);
 private:
 	Cam cam;
 
 	enum struct MeshType{
-		Quad = 0,
-		Cube,
-		Sphere,
-		Cylinder,
+		Quad,
 		SpriteAni,
 		Amt
 	};
 	Mesh* meshes[(int)MeshType::Amt];
 
-	ShaderProg blurSP;
 	ShaderProg forwardSP;
-	ShaderProg geoPassSP;
-	ShaderProg lightingPassSP;
-	ShaderProg normalsSP;
 	ShaderProg screenSP;
-	ShaderProg textSP;
 
 	std::vector<Light*> ptLights;
 	std::vector<Light*> directionalLights;

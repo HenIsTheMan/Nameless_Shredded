@@ -19,24 +19,10 @@ MyScene::MyScene():
 			{"Imgs/BoxSpec.png", Mesh::TexType::Spec, 0},
 			{"Imgs/BoxEmission.png", Mesh::TexType::Emission, 0},
 		}),
-		new Mesh(Mesh::MeshType::Cube, GL_TRIANGLES, {
-			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
-		}),
-		new Mesh(Mesh::MeshType::Sphere, GL_TRIANGLE_STRIP, {
-			{"Imgs/Skydome.hdr", Mesh::TexType::Diffuse, 0},
-		}),
-		new Mesh(Mesh::MeshType::Cylinder, GL_TRIANGLE_STRIP, {
-			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
-		}),
 		new SpriteAni(4, 8),
 	},
-	blurSP{"Shaders/Quad.vs", "Shaders/Blur.fs"},
 	forwardSP{"Shaders/Forward.vs", "Shaders/Forward.fs"},
-	geoPassSP{"Shaders/GeoPass.vs", "Shaders/GeoPass.fs"},
-	lightingPassSP{"Shaders/Quad.vs", "Shaders/LightingPass.fs"},
-	normalsSP{"Shaders/Normals.vs", "Shaders/Normals.fs", "Shaders/Normals.gs"}, //??
 	screenSP{"Shaders/Quad.vs", "Shaders/Screen.fs"},
-	textSP{"Shaders/Text.vs", "Shaders/Text.fs"},
 	ptLights({}),
 	directionalLights({}),
 	spotlights({}),
@@ -145,126 +131,6 @@ void MyScene::Update(float dt){
 	//}
 }
 
-void MyScene::GeoRenderPass(){
-	geoPassSP.Use();
-	geoPassSP.SetMat4fv("PV", &(projection * glm::mat4(glm::mat3(view)))[0][0]);
-
-	///Sky
-	glDepthFunc(GL_LEQUAL); //Modify comparison operators used for depth test such that frags with depth <= 1.f are shown
-	glCullFace(GL_FRONT);
-	geoPassSP.Set1i("sky", 1);
-	PushModel({
-		Rotate(glm::vec4(0.f, 1.f, 0.f, glfwGetTime())),
-	});
-		meshes[(int)MeshType::Sphere]->SetModel(GetTopModel());
-		meshes[(int)MeshType::Sphere]->Render(geoPassSP);
-	PopModel();
-	geoPassSP.Set1i("sky", 0);
-	glCullFace(GL_BACK);
-	glDepthFunc(GL_LESS);
-
-	geoPassSP.SetMat4fv("PV", &(projection * view)[0][0]);
-
-	///Shapes
-	PushModel({
-		Translate(glm::vec3(0.f, 100.f, 0.f)),
-		Scale(glm::vec3(10.f)),
-	});
-		PushModel({
-			Translate(glm::vec3(6.f, 0.f, 0.f)),
-		});
-			geoPassSP.Set1i("noNormals", 1);
-			geoPassSP.Set1i("useCustomColour", 1);
-			geoPassSP.Set4fv("customColour", glm::vec4(glm::vec3(5.f), 1.f));
-			meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
-			meshes[(int)MeshType::Quad]->Render(geoPassSP);
-			geoPassSP.Set1i("useCustomColour", 0);
-			geoPassSP.Set1i("noNormals", 0);
-			PushModel({
-				Translate(glm::vec3(0.f, 0.f, 5.f)),
-			});
-				meshes[(int)MeshType::Sphere]->SetModel(GetTopModel());
-				meshes[(int)MeshType::Sphere]->Render(geoPassSP);
-			PopModel();
-			PushModel({
-				Translate(glm::vec3(0.f, 0.f, -5.f)),
-			});
-				meshes[(int)MeshType::Cylinder]->SetModel(GetTopModel());
-				meshes[(int)MeshType::Cylinder]->Render(geoPassSP);
-			PopModel();
-		PopModel();
-	PopModel();
-}
-
-void MyScene::LightingRenderPass(const uint& posTexRefID, const uint& coloursTexRefID, const uint& normalsTexRefID, const uint& specTexRefID, const uint& reflectionTexRefID){
-	lightingPassSP.Use();
-	const int& pAmt = (int)ptLights.size();
-	const int& dAmt = (int)directionalLights.size();
-	const int& sAmt = (int)spotlights.size();
-
-	lightingPassSP.Set1f("shininess", 32.f); //More light scattering if lower
-	lightingPassSP.Set3fv("globalAmbient", Light::globalAmbient);
-	lightingPassSP.Set3fv("camWorldSpacePos", cam.GetPos());
-	lightingPassSP.Set1i("pAmt", pAmt);
-	lightingPassSP.Set1i("dAmt", dAmt);
-	lightingPassSP.Set1i("sAmt", sAmt);
-	lightingPassSP.UseTex("posTex", posTexRefID);
-	lightingPassSP.UseTex("coloursTex", coloursTexRefID);
-	lightingPassSP.UseTex("normalsTex", normalsTexRefID);
-	lightingPassSP.UseTex("specTex", specTexRefID);
-	lightingPassSP.UseTex("reflectionTex", reflectionTexRefID);
-
-	int i;
-	for(i = 0; i < pAmt; ++i){
-		const PtLight* const& ptLight = static_cast<PtLight*>(ptLights[i]);
-		lightingPassSP.Set3fv(("ptLights[" + std::to_string(i) + "].ambient").c_str(), ptLight->ambient);
-		lightingPassSP.Set3fv(("ptLights[" + std::to_string(i) + "].diffuse").c_str(), ptLight->diffuse);
-		lightingPassSP.Set3fv(("ptLights[" + std::to_string(i) + "].spec").c_str(), ptLight->spec);
-		lightingPassSP.Set3fv(("ptLights[" + std::to_string(i) + "].pos").c_str(), ptLight->pos);
-		lightingPassSP.Set1f(("ptLights[" + std::to_string(i) + "].constant").c_str(), ptLight->constant);
-		lightingPassSP.Set1f(("ptLights[" + std::to_string(i) + "].linear").c_str(), ptLight->linear);
-		lightingPassSP.Set1f(("ptLights[" + std::to_string(i) + "].quadratic").c_str(), ptLight->quadratic);
-	}
-	for(i = 0; i < dAmt; ++i){
-		const DirectionalLight* const& directionalLight = static_cast<DirectionalLight*>(directionalLights[i]);
-		lightingPassSP.Set3fv(("directionalLights[" + std::to_string(i) + "].ambient").c_str(), directionalLight->ambient);
-		lightingPassSP.Set3fv(("directionalLights[" + std::to_string(i) + "].diffuse").c_str(), directionalLight->diffuse);
-		lightingPassSP.Set3fv(("directionalLights[" + std::to_string(i) + "].spec").c_str(), directionalLight->spec);
-		lightingPassSP.Set3fv(("directionalLights[" + std::to_string(i) + "].dir").c_str(), directionalLight->dir);
-	}
-	for(i = 0; i < sAmt; ++i){
-		const Spotlight* const& spotlight = static_cast<Spotlight*>(spotlights[i]);
-		lightingPassSP.Set3fv(("spotlights[" + std::to_string(i) + "].ambient").c_str(), spotlight->ambient);
-		lightingPassSP.Set3fv(("spotlights[" + std::to_string(i) + "].diffuse").c_str(), spotlight->diffuse);
-		lightingPassSP.Set3fv(("spotlights[" + std::to_string(i) + "].spec").c_str(), spotlight->spec);
-		lightingPassSP.Set3fv(("spotlights[" + std::to_string(i) + "].pos").c_str(), spotlight->pos);
-		lightingPassSP.Set3fv(("spotlights[" + std::to_string(i) + "].dir").c_str(), spotlight->dir);
-		lightingPassSP.Set1f(("spotlights[" + std::to_string(i) + "].cosInnerCutoff").c_str(), spotlight->cosInnerCutoff);
-		lightingPassSP.Set1f(("spotlights[" + std::to_string(i) + "].cosOuterCutoff").c_str(), spotlight->cosOuterCutoff);
-	}
-
-	meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
-	meshes[(int)MeshType::Quad]->Render(lightingPassSP, false);
-	lightingPassSP.ResetTexUnits();
-}
-
-void MyScene::BlurRender(const uint& brightTexRefID, const bool& horizontal){
-	blurSP.Use();
-	blurSP.Set1i("horizontal", horizontal);
-	blurSP.UseTex("texSampler", brightTexRefID);
-	meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
-	meshes[(int)MeshType::Quad]->Render(blurSP, false);
-	blurSP.ResetTexUnits();
-}
-
-void MyScene::DefaultRender(const uint& screenTexRefID){
-	screenSP.Use();
-	screenSP.UseTex("screenTexSampler", screenTexRefID);
-	meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
-	meshes[(int)MeshType::Quad]->Render(screenSP, false);
-	screenSP.ResetTexUnits();
-}
-
 void MyScene::ForwardRender(){
 	forwardSP.Use();
 	const int& pAmt = 0;
@@ -310,42 +176,6 @@ void MyScene::ForwardRender(){
 	forwardSP.SetMat4fv("PV", &(projection * view)[0][0]);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	///Shapes
-	PushModel({
-		Translate(glm::vec3(0.f, 100.f, 0.f)),
-		Scale(glm::vec3(10.f)),
-	});
-		forwardSP.Set1i("useCustomColour", 1);
-		forwardSP.Set4fv("customColour", glm::vec4(glm::rgbColor(glm::vec3(1.f, PseudorandMinMax(0.f, 255.f), 1.f)) * .5f, .5f));
-		meshes[(int)MeshType::Cylinder]->SetModel(GetTopModel());
-		meshes[(int)MeshType::Cylinder]->Render(forwardSP);
-		forwardSP.Set1i("useCustomColour", 0);
-		PushModel({
-			Translate(glm::vec3(-3.f, 0.f, 0.f)),
-		});
-			forwardSP.Set1i("useCustomColour", 1);
-			forwardSP.Set4fv("customColour", glm::vec4(glm::rgbColor(glm::vec3(1.f, 1.f, PseudorandMinMax(0.f, 255.f))) * 7.f, .3f));
-			forwardSP.Set1i("useCustomDiffuseTexIndex", 1);
-			forwardSP.Set1i("customDiffuseTexIndex", -1);
-			meshes[(int)MeshType::Sphere]->SetModel(GetTopModel());
-			meshes[(int)MeshType::Sphere]->Render(forwardSP);
-			forwardSP.Set1i("useCustomDiffuseTexIndex", 0);
-			forwardSP.Set1i("useCustomColour", 0);
-		PopModel();
-		PushModel({
-			Translate(glm::vec3(3.f, 0.f, 0.f)),
-		});
-			forwardSP.Set1i("useCustomColour", 1);
-			forwardSP.Set4fv("customColour", glm::vec4(glm::rgbColor(glm::vec3(PseudorandMinMax(0.f, 255.f), 1.f, 1.f)) * .5f, .7f));
-			forwardSP.Set1i("useCustomDiffuseTexIndex", 1);
-			forwardSP.Set1i("customDiffuseTexIndex", -1);
-			meshes[(int)MeshType::Cube]->SetModel(GetTopModel());
-			meshes[(int)MeshType::Cube]->Render(forwardSP);
-			forwardSP.Set1i("useCustomDiffuseTexIndex", 0);
-			forwardSP.Set1i("useCustomColour", 0);
-		PopModel();
-	PopModel();
-
 	///SpriteAni
 	PushModel({
 		Translate(glm::vec3(0.f, 50.f, 0.f)),
@@ -361,6 +191,14 @@ void MyScene::ForwardRender(){
 	PopModel();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+void MyScene::DefaultRender(const uint& screenTexRefID){
+	screenSP.Use();
+	screenSP.UseTex("screenTexSampler", screenTexRefID);
+	meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
+	meshes[(int)MeshType::Quad]->Render(screenSP, false);
+	screenSP.ResetTexUnits();
 }
 
 glm::mat4 MyScene::Translate(const glm::vec3& translate){
