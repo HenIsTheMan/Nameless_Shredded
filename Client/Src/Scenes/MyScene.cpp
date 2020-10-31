@@ -23,9 +23,9 @@ MyScene::MyScene():
 	},
 	forwardSP{"Shaders/Forward.vs", "Shaders/Forward.fs"},
 	screenSP{"Shaders/Quad.vs", "Shaders/Screen.fs"},
-	ptLights({}),
-	directionalLights({}),
-	spotlights({}),
+	ptLights(),
+	directionalLights(),
+	spotlights(),
 	view(glm::mat4(1.f)),
 	projection(glm::mat4(1.f)),
 	elapsedTime(0.f),
@@ -69,12 +69,12 @@ bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
 	for(int i = 0; i < 99; ++i){
-		PushModel({
-			Translate(glm::vec3(PseudorandMinMax(-2000.f, 2000.f), PseudorandMinMax(-2000.f, 2000.f), -5.f)),
-			Rotate(glm::vec4(0.f, 1.f, 0.f, -45.f)),
+		modelStack.PushModel({
+			modelStack.Translate(glm::vec3(PseudorandMinMax(-2000.f, 2000.f), PseudorandMinMax(-2000.f, 2000.f), -5.f)),
+			modelStack.Rotate(glm::vec4(0.f, 1.f, 0.f, -45.f)),
 		});
-			meshes[(int)MeshType::Quad]->AddModelMat(GetTopModel());
-		PopModel();
+			meshes[(int)MeshType::Quad]->AddModelMat(modelStack.GetTopModel());
+		modelStack.PopModel();
 	}
 
 	meshes[(int)MeshType::SpriteAni]->AddTexMap({"Imgs/Fire.png", Mesh::TexType::Diffuse, 0});
@@ -168,18 +168,18 @@ void MyScene::ForwardRender(){
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	///SpriteAni
-	PushModel({
-		Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
-		Scale(glm::vec3(20.f, 40.f, 20.f)),
+	modelStack.PushModel({
+		modelStack.Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
+		modelStack.Scale(glm::vec3(20.f, 40.f, 20.f)),
 	});
 		forwardSP.Set1i("noNormals", 1);
 		forwardSP.Set1i("useCustomColour", 1);
 		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
-		meshes[(int)MeshType::SpriteAni]->SetModel(GetTopModel());
+		meshes[(int)MeshType::SpriteAni]->SetModel(modelStack.GetTopModel());
 		meshes[(int)MeshType::SpriteAni]->Render(forwardSP);
 		forwardSP.Set1i("useCustomColour", 0);
 		forwardSP.Set1i("noNormals", 0);
-	PopModel();
+	modelStack.PopModel();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 }
@@ -187,37 +187,7 @@ void MyScene::ForwardRender(){
 void MyScene::DefaultRender(const uint& screenTexRefID){
 	screenSP.Use();
 	screenSP.UseTex("screenTexSampler", screenTexRefID);
-	meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
+	meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 	meshes[(int)MeshType::Quad]->Render(screenSP, false);
 	screenSP.ResetTexUnits();
-}
-
-glm::mat4 MyScene::Translate(const glm::vec3& translate){
-	return glm::translate(glm::mat4(1.f), translate);
-}
-
-glm::mat4 MyScene::Rotate(const glm::vec4& rotate){
-	return glm::rotate(glm::mat4(1.f), glm::radians(rotate.w), glm::vec3(rotate));
-}
-
-glm::mat4 MyScene::Scale(const glm::vec3& scale){
-	return glm::scale(glm::mat4(1.f), scale);
-}
-
-glm::mat4 MyScene::GetTopModel() const{
-	return modelStack.empty() ? glm::mat4(1.f) : modelStack.top();
-}
-
-void MyScene::PushModel(const std::vector<glm::mat4>& vec) const{
-	modelStack.push(modelStack.empty() ? glm::mat4(1.f) : modelStack.top());
-	const size_t& size = vec.size();
-	for(size_t i = 0; i < size; ++i){
-		modelStack.top() *= vec[i];
-	}
-}
-
-void MyScene::PopModel() const{
-	if(!modelStack.empty()){
-		modelStack.pop();
-	}
 }
