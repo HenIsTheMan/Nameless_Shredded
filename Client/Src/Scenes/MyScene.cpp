@@ -71,6 +71,8 @@ MyScene::~MyScene(){
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
+	glLineWidth(10.f);
+
 	for(int i = 0; i < 99; ++i){
 		modelStack.PushModel({
 			modelStack.Translate(glm::vec3(PseudorandMinMax(-2000.f, 2000.f), PseudorandMinMax(-2000.f, 2000.f), -5.f)),
@@ -96,8 +98,8 @@ void MyScene::Update(float dt){
 		cam.ResetAspectRatio();
 	}
 	cam.Update(dt, GLFW_KEY_Q, GLFW_KEY_E, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
-	view = cam.LookAt();
-	projection = glm::ortho(0.0f, (float)winWidth, 0.0f, (float)winHeight, 0.0f, 99999.0f);
+	view = glm::mat4();
+	projection = glm::ortho(0.0f, (float)winWidth, 0.0f, (float)winHeight);
 
 	const glm::vec3& camWorldSpacePos = cam.GetPos();
 	const glm::vec3& camFront = cam.CalcFront();

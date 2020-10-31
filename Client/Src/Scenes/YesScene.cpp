@@ -57,9 +57,6 @@ void YesScene::Init(){
 	//glEnable(GL_FRAMEBUFFER_SRGB); //Colours from sRGB colour space are gamma corrected after each frag shader run before they are stored in colour buffers of all framebuffers
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-	glPointSize(10.f);
-	glLineWidth(20.f);
-
 	mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 	glGenFramebuffers(sizeof(FBORefIDs) / sizeof(FBORefIDs[0]), FBORefIDs);

@@ -39,12 +39,15 @@ bool InitAPI(GLFWwindow*& win){
     #endif
 
     const GLFWvidmode* const& mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    SetWindowPos(GetConsoleWindow(), 0,
+    SetWindowPos(
+        GetConsoleWindow(),
+        0,
         int((GetSystemMetrics(SM_CXFULLSCREEN) - float(mode->width - GetSystemMetrics(SM_CXFULLSCREEN)) / 2.f) * 5.f / 6.f),
         0,
         int((GetSystemMetrics(SM_CXFULLSCREEN) - float(mode->width - GetSystemMetrics(SM_CXFULLSCREEN)) / 2.f) / 6.f),
         GetSystemMetrics(SM_CYFULLSCREEN),
-        0);
+        0
+    );
     optimalWinWidth = winWidth = int((GetSystemMetrics(SM_CXFULLSCREEN) - float(mode->width - GetSystemMetrics(SM_CXFULLSCREEN)) / 2.f) * 5.f / 6.f);
     optimalWinHeight = winHeight = GetSystemMetrics(SM_CYFULLSCREEN) - int(float(mode->height - GetSystemMetrics(SM_CYFULLSCREEN)) / 2.f);
     win = glfwCreateWindow(winWidth, winHeight, "Nameless Engine", nullptr, nullptr);
@@ -65,7 +68,7 @@ bool InitAPI(GLFWwindow*& win){
     glfwSetCursorPosCallback(win, CursorPosCallback);
     glfwSetMouseButtonCallback(win, MouseButtonCallback);
     glfwSetScrollCallback(win, ScrollCallback);
-    glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Hide and capture mouse cursor
+    glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     return true;
 }
