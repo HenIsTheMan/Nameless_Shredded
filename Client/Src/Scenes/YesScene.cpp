@@ -58,7 +58,7 @@ void YesScene::Init(){
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	glPointSize(10.f);
-	glLineWidth(5.f);
+	glLineWidth(20.f);
 
 	mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 

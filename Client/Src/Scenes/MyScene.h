@@ -3,8 +3,10 @@
 #include "Plat/Win/App/Scene/Cam/Cam.h"
 #include "Geo/Mesh.h"
 #include "Graphics/Light.h"
-#include "Graphics/ShaderProg.h"
 #include "Graphics/ModelStack.h"
+#include "Graphics/ShaderProg.h"
+
+#include "../DM2242/Grid.h"
 
 class MyScene final{
 public:
@@ -15,9 +17,10 @@ public:
 	void ForwardRender();
 	void DefaultRender(const uint& screenTexRefID);
 private:
-	Cam cam;
+	Grid<float> grid;
 
 	enum struct MeshType{
+		Line,
 		Quad,
 		SpriteAni,
 		Amt
@@ -31,6 +34,7 @@ private:
 	std::vector<Light*> directionalLights;
 	std::vector<Light*> spotlights;
 
+	Cam cam;
 	glm::mat4 view;
 	glm::mat4 projection;
 

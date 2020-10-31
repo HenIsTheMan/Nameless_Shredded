@@ -12,8 +12,10 @@ extern int winHeight;
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
 MyScene::MyScene():
-	cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f), 0.f, 150.f),
+	grid(Grid<float>(5.0f, 5.0f, 10, 10)),
 	meshes{
+		new Mesh(Mesh::MeshType::Line, GL_LINES, {
+		}),
 		new Mesh(Mesh::MeshType::Quad, GL_TRIANGLES, {
 			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
 			{"Imgs/BoxSpec.png", Mesh::TexType::Spec, 0},
@@ -26,6 +28,7 @@ MyScene::MyScene():
 	ptLights(),
 	directionalLights(),
 	spotlights(),
+	cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f), 0.f, 150.f),
 	view(glm::mat4(1.f)),
 	projection(glm::mat4(1.f)),
 	elapsedTime(0.f),
@@ -167,10 +170,23 @@ void MyScene::ForwardRender(){
 	forwardSP.SetMat4fv("PV", &(projection * view)[0][0]);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	///SpriteAni
 	modelStack.PushModel({
 		modelStack.Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
-		modelStack.Scale(glm::vec3(20.f, 40.f, 20.f)),
+		modelStack.Scale(glm::vec3(winHeight, winHeight, 1.0f)),
+	});
+		forwardSP.Set1i("noNormals", 1);
+		forwardSP.Set1i("useCustomColour", 1);
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
+		meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
+		meshes[(int)MeshType::Line]->Render(forwardSP);
+		forwardSP.Set1i("useCustomColour", 0);
+		forwardSP.Set1i("noNormals", 0);
+	modelStack.PopModel();
+
+	/////SpriteAni
+	modelStack.PushModel({
+		modelStack.Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
+		modelStack.Scale(glm::vec3(20.0f, 40.0f, 20.0f)),
 	});
 		forwardSP.Set1i("noNormals", 1);
 		forwardSP.Set1i("useCustomColour", 1);

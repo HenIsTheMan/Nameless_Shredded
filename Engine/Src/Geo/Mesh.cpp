@@ -196,6 +196,9 @@ void Mesh::InstancedRender(ShaderProg& SP, const bool& autoConfig){
 
 	if(!instancingVAO){
 		switch(type){
+			case MeshType::Line:
+				CreateLine();
+				break;
 			case MeshType::Quad:
 				CreateQuad();
 				break;
@@ -325,6 +328,9 @@ void Mesh::Render(ShaderProg& SP, const bool& autoConfig){
 
 	if(!VAO){
 		switch(type){
+			case MeshType::Line:
+				CreateLine();
+				break;
 			case MeshType::Quad:
 				CreateQuad();
 				break;
@@ -418,6 +424,24 @@ void Mesh::SetModel(const glm::mat4& model){
 void Mesh::SetModelMat(const glm::mat4& modelMat, const ptrdiff_t& index){
 	if(index < (ptrdiff_t)modelMats.size()){
 		modelMats[index] = modelMat;
+	}
+}
+
+void Mesh::CreateLine(){
+	if(!vertices){
+		vertices = new std::vector<Vertex>(2);
+		(*vertices)[0] = {
+			glm::vec3(-0.5f, 0.0f, 0.0f),
+			glm::vec4(.7f, .4f, .1f, 1.f),
+			glm::vec2(0.0f, 0.0f),
+			glm::vec3(0.f, 0.f, 1.f),
+		};
+		(*vertices)[1] = {
+			glm::vec3(0.5f, 0.0f, 0.0f),
+			glm::vec4(.7f, .4f, .1f, 1.f),
+			glm::vec2(0.0f, 1.0f),
+			glm::vec3(0.f, 0.f, 1.f),
+		};
 	}
 }
 

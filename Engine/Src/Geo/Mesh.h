@@ -6,14 +6,15 @@ class Mesh{ //Single drawable geo
 	friend class Model;
 public:
 	enum struct MeshType{ //Pt, Line, 2D (circle, ring and 2D polygons with >= 3 vertices), 3D (sphere, torus and 3D polyhedrons with >= 3 flat polygonal faces)
-		Quad = 0,
+		Line,
+		Quad,
 		Cube,
 		Sphere,
 		Cylinder,
 		Amt
 	};
 	enum struct TexType{
-		Diffuse = 0,
+		Diffuse,
 		Spec,
 		Emission,
 		Reflection,
@@ -66,6 +67,7 @@ protected:
 	uint EBO;
 
 	glm::mat4 model;
+	void CreateLine(); //1x0
 	void CreateQuad(); //2x2
 	void CreateCube(); //2x2x2
 	void CreateSphere(); //2x2x2
