@@ -17,6 +17,7 @@ public:
 	void ForwardRender();
 	void DefaultRender(const uint& screenTexRefID);
 private:
+	float lineWidth;
 	Grid<float> grid;
 
 	enum struct MeshType{

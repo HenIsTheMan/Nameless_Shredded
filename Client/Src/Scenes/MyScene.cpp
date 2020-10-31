@@ -14,7 +14,8 @@ extern float lastY;
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
 MyScene::MyScene():
-	grid(Grid<float>(50.0f, 50.0f, 10, 10)),
+	lineWidth(5.5f),
+	grid(),
 	meshes{
 		new Mesh(Mesh::MeshType::Line, GL_LINES, {
 		}),
@@ -73,7 +74,9 @@ MyScene::~MyScene(){
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
-	glLineWidth(5.5f);
+	glLineWidth(lineWidth);
+
+	grid = Grid<float>((float)winHeight / 20.0f, (float)winHeight / 20.0f, 10, 10);
 
 	for(int i = 0; i < 99; ++i){
 		modelStack.PushModel({
@@ -178,14 +181,16 @@ void MyScene::ForwardRender(){
 	forwardSP.Set1i("useCustomColour", 1);
 
 	///Render grid
-	const float gridWidth = (float)grid.GetCols() * grid.GetCellWidth();
-	const float gridHeight = (float)grid.GetRows() * grid.GetCellHeight();
+	const float gridCellWidth = grid.GetCellWidth();
+	const float gridCellHeight = grid.GetCellHeight();
+	const float gridWidth = (float)grid.GetCols() * gridCellWidth;
+	const float gridHeight = (float)grid.GetRows() * gridCellHeight;
 
 	const int amtOfHorizLines = grid.GetRows() + 1;
-	const float yOffset = (winHeight - gridHeight) * 0.5f;
+	const float yOffset = ((float)winHeight - gridHeight) * 0.5f;
 	for(int i = 0; i < amtOfHorizLines; ++i){
 		modelStack.PushModel({
-			modelStack.Translate(glm::vec3(winWidth / 2.0f, yOffset + grid.GetCellHeight() * (float)i, 0.0f)),
+			modelStack.Translate(glm::vec3((float)winWidth / 2.0f, yOffset + gridCellHeight * (float)i, 0.0f)),
 			modelStack.Scale(glm::vec3(gridWidth, 1.0f, 1.0f)),
 		});
 			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
@@ -195,10 +200,10 @@ void MyScene::ForwardRender(){
 	}
 
 	const int amtOfVertLines = grid.GetCols() + 1;
-	const float xOffset = (winWidth - gridWidth) * 0.5f;
+	const float xOffset = ((float)winWidth - gridWidth) * 0.5f;
 	for(int i = 0; i < amtOfVertLines; ++i){
 		modelStack.PushModel({
-			modelStack.Translate(glm::vec3(xOffset + grid.GetCellWidth() * (float)i, winHeight / 2.0f, 0.0f)),
+			modelStack.Translate(glm::vec3(xOffset + gridCellWidth * (float)i, (float)winHeight / 2.0f, 0.0f)),
 			modelStack.Rotate(glm::vec4(0.0f, 0.0f, 1.0f, -90.0f)),
 			modelStack.Scale(glm::vec3(gridHeight, 1.0f, 1.0f)),
 		});
@@ -210,26 +215,20 @@ void MyScene::ForwardRender(){
 
 	///Render translucent block
 	modelStack.PushModel({
-		modelStack.Translate(glm::vec3(lastX, winHeight - lastY, 0.0f)),
-		modelStack.Scale(glm::vec3(grid.GetCellWidth() * 0.5f, grid.GetCellHeight() * 0.5f, 1.0f)),
+		modelStack.Translate(glm::vec3(
+			(float)int((lastX - fmod((float)winWidth, gridCellWidth) * 0.5f) / gridCellWidth) * gridCellWidth + gridCellWidth * 0.5f + fmod((float)winWidth, gridCellWidth) * 0.5f,
+			(float)int(((float)winHeight - lastY) / gridCellHeight) * gridCellHeight + gridCellHeight * 0.5f,
+			0.0f
+		)),
+		modelStack.Scale(glm::vec3(gridCellHeight * 0.5f, gridCellHeight * 0.5f, 1.0f)),
 	});
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.1f));
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 1.0f));
 		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 		meshes[(int)MeshType::Quad]->Render(forwardSP);
 	modelStack.PopModel();
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);
-
-	///Render SpriteAni
-	modelStack.PushModel({
-		modelStack.Translate(glm::vec3(winWidth / 2.0f, winHeight / 2.0f, 0.0f)),
-		modelStack.Scale(glm::vec3(20.0f, 40.0f, 20.0f)),
-	});
-		forwardSP.Set4fv("customColour", glm::vec4(1.0f));
-		meshes[(int)MeshType::SpriteAni]->SetModel(modelStack.GetTopModel());
-		meshes[(int)MeshType::SpriteAni]->Render(forwardSP);
-	modelStack.PopModel();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 }
