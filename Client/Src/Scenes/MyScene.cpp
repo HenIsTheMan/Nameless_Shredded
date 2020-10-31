@@ -214,18 +214,25 @@ void MyScene::ForwardRender(){
 	}
 
 	///Render translucent block
-	modelStack.PushModel({
-		modelStack.Translate(glm::vec3(
-			(float)int((lastX - fmod((float)winWidth, gridCellWidth) * 0.5f) / gridCellWidth) * gridCellWidth + gridCellWidth * 0.5f + fmod((float)winWidth, gridCellWidth) * 0.5f,
-			(float)int(((float)winHeight - lastY) / gridCellHeight) * gridCellHeight + gridCellHeight * 0.5f,
-			0.0f
-		)),
-		modelStack.Scale(glm::vec3(gridCellHeight * 0.5f, gridCellHeight * 0.5f, 1.0f)),
-	});
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 1.0f));
-		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
-		meshes[(int)MeshType::Quad]->Render(forwardSP);
-	modelStack.PopModel();
+	const float xTranslate = (float)int((lastX - fmod((float)winWidth, gridCellWidth) * 0.5f) / gridCellWidth) * gridCellWidth
+		+ gridCellWidth * 0.5f
+		+ fmod((float)winWidth, gridCellWidth) * 0.5f;
+	const float yTranslate = (float)int(((float)winHeight - lastY) / gridCellHeight) * gridCellHeight + gridCellHeight * 0.5f;
+
+	if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
+		modelStack.PushModel({
+			modelStack.Translate(glm::vec3(
+				xTranslate,
+				yTranslate,
+				0.0f
+			)),
+			modelStack.Scale(glm::vec3(gridCellHeight * 0.5f, gridCellHeight * 0.5f, 1.0f)),
+		});
+			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.2f));
+			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::Quad]->Render(forwardSP);
+		modelStack.PopModel();
+	}
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);

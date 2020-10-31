@@ -7,5 +7,6 @@ Main Features:
 *
 
 Other Features:
-* Translucent box snaps to grid cells
+* Translucent block snaps to grid cells
+* Translucent block stays within grid boundaries
 * Grid is centered on screen
