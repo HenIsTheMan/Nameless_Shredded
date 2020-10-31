@@ -257,11 +257,9 @@ void MyScene::BlurRender(const uint& brightTexRefID, const bool& horizontal){
 	blurSP.ResetTexUnits();
 }
 
-void MyScene::DefaultRender(const uint& screenTexRefID, const uint& blurTexRefID){
+void MyScene::DefaultRender(const uint& screenTexRefID){
 	screenSP.Use();
-	screenSP.Set1f("exposure", 1.2f);
 	screenSP.UseTex("screenTexSampler", screenTexRefID);
-	screenSP.UseTex("blurTexSampler", blurTexRefID);
 	meshes[(int)MeshType::Quad]->SetModel(GetTopModel());
 	meshes[(int)MeshType::Quad]->Render(screenSP, false);
 	screenSP.ResetTexUnits();

@@ -14,7 +14,7 @@ public:
 	void GeoRenderPass();
 	void LightingRenderPass(const uint& posTexRefID, const uint& coloursTexRefID, const uint& normalsTexRefID, const uint& specTexRefID, const uint& reflectionTexRefID);
 	void BlurRender(const uint& brightTexRefID, const bool& horizontal);
-	void DefaultRender(const uint& screenTexRefID, const uint& blurTexRefID);
+	void DefaultRender(const uint& screenTexRefID);
 	void ForwardRender();
 private:
 	Cam cam;

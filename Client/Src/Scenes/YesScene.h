@@ -22,22 +22,11 @@ public:
 	static void PostRender();
 private:
 	enum struct FBO{
-		GeoPass,
-		LightingPass,
-		PingPong0,
-		PingPong1,
+		Normal,
 		Amt
 	};
 	enum struct Tex{
-		Pos,
-		Colours,
-		Normals,
-		Spec,
-		Reflection,
-		Lit,
-		Bright,
-		PingPong0,
-		PingPong1,
+		Normal,
 		Amt
 	};
 
