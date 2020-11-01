@@ -243,7 +243,7 @@ void MyScene::ForwardRender(){
 	int quotX; //Used for checking if len of x end regions combined is >= unitX
 	const float unitX = gridCellWidth + gridLineThickness * 0.5f;
 	const float resultX = remquof(winWidth - gridLineThickness * 0.5f, unitX, &quotX);
-	const float offsetX = (quotX & 1 ? resultX - unitX : resultX) * 0.5f;
+	const float offsetX = (gridCols & 1 ? (quotX & 1 ? resultX : resultX - unitX) : (quotX & 1 ? resultX - unitX : resultX)) * 0.5f;
 	const float xTranslate = std::floor((lastX - offsetX) / unitX) * unitX
 		+ offsetX
 		+ gridCellWidth * 0.5f + gridLineThickness * 0.5f;
@@ -251,7 +251,7 @@ void MyScene::ForwardRender(){
 	int quotY; //Used for checking if len of y end regions combined is >= unitY
 	const float unitY = gridCellHeight + gridLineThickness * 0.5f;
 	const float resultY = remquof(winHeight - gridLineThickness * 0.5f, unitY, &quotY);
-	const float offsetY = (quotY & 1 ? resultY - unitY : resultY) * 0.5f;
+	const float offsetY = (gridRows & 1 ? (quotY & 1 ? resultY : resultY - unitY) : (quotY & 1 ? resultY - unitY : resultY)) * 0.5f;
 	const float yTranslate = std::floor((winHeight - lastY - offsetY) / unitY) * unitY
 		+ offsetY
 		+ gridCellHeight * 0.5f + gridLineThickness * 0.5f;
