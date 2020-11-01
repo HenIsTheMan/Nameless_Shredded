@@ -115,6 +115,77 @@ void MyScene::Update(float dt){
 		polyModeBT = elapsedTime + .5f;
 	}
 
+	static bool isKeyDown1 = false;
+	static bool isKeyDown2 = false;
+	static bool isKeyDown3 = false;
+	static bool isKeyDown4 = false;
+	static bool isKeyDown5 = false;
+	static bool isKeyDown6 = false;
+	static bool isKeyDown7 = false;
+	static bool isKeyDown8 = false;
+	static bool isKeyDown9 = false;
+	static bool isKeyDown0 = false;
+	if(!isKeyDown1 && Key('1')){
+		++gridCellWidth;
+		isKeyDown1 = true;
+	} else if(isKeyDown1 && !Key('1')){
+		isKeyDown1 = false;
+	}
+	if(!isKeyDown2 && Key('2')){
+		--gridCellWidth;
+		isKeyDown2 = true;
+	} else if(isKeyDown2 && !Key('2')){
+		isKeyDown2 = false;
+	}
+	if(!isKeyDown3 && Key('3')){
+		++gridCellHeight;
+		isKeyDown3 = true;
+	} else if(isKeyDown3 && !Key('3')){
+		isKeyDown3 = false;
+	}
+	if(!isKeyDown4 && Key('4')){
+		--gridCellHeight;
+		isKeyDown4 = true;
+	} else if(isKeyDown4 && !Key('4')){
+		isKeyDown4 = false;
+	}
+	if(!isKeyDown5 && Key('5')){
+		++gridLineThickness;
+		isKeyDown5 = true;
+	} else if(isKeyDown5 && !Key('5')){
+		isKeyDown5 = false;
+	}
+	if(!isKeyDown6 && Key('6')){
+		--gridLineThickness;
+		isKeyDown6 = true;
+	} else if(isKeyDown6 && !Key('6')){
+		isKeyDown6 = false;
+	}
+	if(!isKeyDown7 && Key('7')){
+		++gridRows;
+		isKeyDown7 = true;
+	} else if(isKeyDown7 && !Key('7')){
+		isKeyDown7 = false;
+	}
+	if(!isKeyDown8 && Key('8')){
+		--gridRows;
+		isKeyDown8 = true;
+	} else if(isKeyDown8 && !Key('8')){
+		isKeyDown8 = false;
+	}
+	if(!isKeyDown9 && Key('9')){
+		++gridCols;
+		isKeyDown9 = true;
+	} else if(isKeyDown9 && !Key('9')){
+		isKeyDown9 = false;
+	}
+	if(!isKeyDown0 && Key('0')){
+		--gridCols;
+		isKeyDown0 = true;
+	} else if(isKeyDown0 && !Key('0')){
+		isKeyDown0 = false;
+	}
+
 	grid.SetCellWidth(gridCellWidth);
 	grid.SetCellHeight(gridCellHeight);
 	grid.SetLineThickness(gridLineThickness);
