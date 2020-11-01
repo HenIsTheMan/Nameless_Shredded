@@ -169,15 +169,19 @@ void MyScene::ForwardRender(){
 	}
 
 	///Render translucent block
-	const float myOffset = (winWidth - gridWidth) * 0.5f;
-	const float xTranslate = (float)int((lastX + myOffset) / gridCellWidth) * gridCellWidth - myOffset;
-	const float yTranslate = (float)int(((float)winHeight - lastY) / gridCellHeight) * gridCellHeight + 0.5f * gridCellHeight;
+	const float factorX = gridCellWidth + gridLineThickness * 0.5f;
+	const float offsetX = fmod(winWidth - gridLineThickness * 0.5f, factorX) * 0.5f;
+	const float xTranslate = (float)int((lastX - offsetX) / factorX) * factorX + offsetX + gridCellWidth * 0.5f + gridLineThickness * 0.5f;
 
-	extern bool LMB;
-	extern bool RMB;
-	if(LMB){
-		printf((std::to_string(fmod((float)winWidth, gridCellWidth) * 0.5f) + '\n').c_str());
-	}
+	const float factorY = gridCellHeight + gridLineThickness * 0.5f;
+	const float offsetY = fmod(winHeight - gridLineThickness * 0.5f, factorY) * 0.5f;
+	const float yTranslate = (float)int((winHeight - lastY - offsetY) / factorY) * factorY + offsetY + gridCellHeight * 0.5f + gridLineThickness * 0.5f;
+
+	//extern bool LMB;
+	//extern bool RMB;
+	//if(LMB){
+	//	printf((std::to_string(fmod((float)winWidth, gridCellWidth) * 0.5f) + '\n').c_str());
+	//}
 
 	//if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
 		modelStack.PushModel({
@@ -186,7 +190,7 @@ void MyScene::ForwardRender(){
 				yTranslate,
 				0.0f
 			)),
-			modelStack.Scale(glm::vec3(gridCellHeight * 0.5f, gridCellHeight * 0.5f, 1.0f)),
+			modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
 		});
 			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.2f));
 			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
