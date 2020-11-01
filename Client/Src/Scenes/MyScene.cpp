@@ -14,11 +14,13 @@ extern float lastY;
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
 MyScene::MyScene():
-	lineWidth(5.5f),
-	grid(),
+	gridCellWidth(50.0f),
+	gridCellHeight(50.0f),
+	gridLineThickness(5.0f),
+	gridRows(10),
+	gridCols(10),
+	grid(Grid<float>(0.0f, 0.0f, 0.0f, 0, 0)),
 	meshes{
-		new Mesh(Mesh::MeshType::Line, GL_LINES, {
-		}),
 		new Mesh(Mesh::MeshType::Quad, GL_TRIANGLES, {
 			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
 			{"Imgs/BoxSpec.png", Mesh::TexType::Spec, 0},
@@ -74,19 +76,6 @@ MyScene::~MyScene(){
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
-	glLineWidth(lineWidth);
-
-	grid = Grid<float>((float)winHeight / 20.0f, (float)winHeight / 20.0f, 10, 10);
-
-	for(int i = 0; i < 99; ++i){
-		modelStack.PushModel({
-			modelStack.Translate(glm::vec3(PseudorandMinMax(-2000.f, 2000.f), PseudorandMinMax(-2000.f, 2000.f), -5.f)),
-			modelStack.Rotate(glm::vec4(0.f, 1.f, 0.f, -45.f)),
-		});
-			meshes[(int)MeshType::Quad]->AddModelMat(modelStack.GetTopModel());
-		modelStack.PopModel();
-	}
-
 	meshes[(int)MeshType::SpriteAni]->AddTexMap({"Imgs/Fire.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->AddAni("FireSpriteAni", 0, 32);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->Play("FireSpriteAni", -1, .5f);
@@ -120,59 +109,28 @@ void MyScene::Update(float dt){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->Update(dt);
 
 	static float polyModeBT = 0.f;
-	static float distortionBT = 0.f;
-	static float echoBT = 0.f;
-	static float wavesReverbBT = 0.f;
-	static float resetSoundFXBT = 0.f;
-
 	if(Key(GLFW_KEY_F2) && polyModeBT <= elapsedTime){
 		polyMode += polyMode == GL_FILL ? -2 : 1;
 		glPolygonMode(GL_FRONT_AND_BACK, polyMode);
 		polyModeBT = elapsedTime + .5f;
 	}
+
+	grid.SetCellWidth(gridCellWidth);
+	grid.SetCellHeight(gridCellHeight);
+	grid.SetLineThickness(gridLineThickness);
+	grid.SetRows(gridRows);
+	grid.SetCols(gridCols);
 }
 
 void MyScene::ForwardRender(){
 	forwardSP.Use();
-	const int& pAmt = 0;
-	const int& dAmt = 0;
-	const int& sAmt = 0;
 
 	forwardSP.Set1f("shininess", 32.f); //More light scattering if lower
 	forwardSP.Set3fv("globalAmbient", Light::globalAmbient);
 	forwardSP.Set3fv("camWorldSpacePos", cam.GetPos());
-	forwardSP.Set1i("pAmt", pAmt);
-	forwardSP.Set1i("dAmt", dAmt);
-	forwardSP.Set1i("sAmt", sAmt);
-
-	int i;
-	for(i = 0; i < pAmt; ++i){
-		const PtLight* const& ptLight = static_cast<PtLight*>(ptLights[i]);
-		forwardSP.Set3fv(("ptLights[" + std::to_string(i) + "].ambient").c_str(), ptLight->ambient);
-		forwardSP.Set3fv(("ptLights[" + std::to_string(i) + "].diffuse").c_str(), ptLight->diffuse);
-		forwardSP.Set3fv(("ptLights[" + std::to_string(i) + "].spec").c_str(), ptLight->spec);
-		forwardSP.Set3fv(("ptLights[" + std::to_string(i) + "].pos").c_str(), ptLight->pos);
-		forwardSP.Set1f(("ptLights[" + std::to_string(i) + "].constant").c_str(), ptLight->constant);
-		forwardSP.Set1f(("ptLights[" + std::to_string(i) + "].linear").c_str(), ptLight->linear);
-		forwardSP.Set1f(("ptLights[" + std::to_string(i) + "].quadratic").c_str(), ptLight->quadratic);
-	}
-	for(i = 0; i < dAmt; ++i){
-		const DirectionalLight* const& directionalLight = static_cast<DirectionalLight*>(directionalLights[i]);
-		forwardSP.Set3fv(("directionalLights[" + std::to_string(i) + "].ambient").c_str(), directionalLight->ambient);
-		forwardSP.Set3fv(("directionalLights[" + std::to_string(i) + "].diffuse").c_str(), directionalLight->diffuse);
-		forwardSP.Set3fv(("directionalLights[" + std::to_string(i) + "].spec").c_str(), directionalLight->spec);
-		forwardSP.Set3fv(("directionalLights[" + std::to_string(i) + "].dir").c_str(), directionalLight->dir);
-	}
-	for(i = 0; i < sAmt; ++i){
-		const Spotlight* const& spotlight = static_cast<Spotlight*>(spotlights[i]);
-		forwardSP.Set3fv(("spotlights[" + std::to_string(i) + "].ambient").c_str(), spotlight->ambient);
-		forwardSP.Set3fv(("spotlights[" + std::to_string(i) + "].diffuse").c_str(), spotlight->diffuse);
-		forwardSP.Set3fv(("spotlights[" + std::to_string(i) + "].spec").c_str(), spotlight->spec);
-		forwardSP.Set3fv(("spotlights[" + std::to_string(i) + "].pos").c_str(), spotlight->pos);
-		forwardSP.Set3fv(("spotlights[" + std::to_string(i) + "].dir").c_str(), spotlight->dir);
-		forwardSP.Set1f(("spotlights[" + std::to_string(i) + "].cosInnerCutoff").c_str(), spotlight->cosInnerCutoff);
-		forwardSP.Set1f(("spotlights[" + std::to_string(i) + "].cosOuterCutoff").c_str(), spotlight->cosOuterCutoff);
-	}
+	forwardSP.Set1i("pAmt", 0);
+	forwardSP.Set1i("dAmt", 0);
+	forwardSP.Set1i("sAmt", 0);
 
 	forwardSP.SetMat4fv("PV", &(projection * view)[0][0]);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -181,45 +139,47 @@ void MyScene::ForwardRender(){
 	forwardSP.Set1i("useCustomColour", 1);
 
 	///Render grid
-	const float gridCellWidth = grid.GetCellWidth();
-	const float gridCellHeight = grid.GetCellHeight();
-	const float gridWidth = (float)grid.GetCols() * gridCellWidth;
-	const float gridHeight = (float)grid.GetRows() * gridCellHeight;
+	const float amtOfHorizLines = gridRows + 1.0f;
+	const float amtOfVertLines = gridCols + 1.0f;
+	const float gridWidth = gridCols * gridCellWidth + amtOfVertLines * gridLineThickness * 0.5f;
+	const float gridHeight = gridRows * gridCellHeight + amtOfHorizLines * gridLineThickness * 0.5f;
 
-	const int amtOfHorizLines = grid.GetRows() + 1;
-	const float yOffset = ((float)winHeight - gridHeight) * 0.5f;
+	const float yOffset = ((float)winHeight - gridHeight) * 0.5f + gridLineThickness * 0.5f * 0.5f;
 	for(int i = 0; i < amtOfHorizLines; ++i){
 		modelStack.PushModel({
-			modelStack.Translate(glm::vec3((float)winWidth / 2.0f, yOffset + gridCellHeight * (float)i, 0.0f)),
-			modelStack.Scale(glm::vec3(gridWidth, 1.0f, 1.0f)),
+			modelStack.Translate(glm::vec3((float)winWidth * 0.5f, yOffset + gridCellHeight * (float)i + gridLineThickness * 0.5f * (float)i, 0.0f)),
+			modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridLineThickness * 0.5f, 1.0f)),
 		});
 			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
-			meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
-			meshes[(int)MeshType::Line]->Render(forwardSP);
+			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
 	}
 
-	const int amtOfVertLines = grid.GetCols() + 1;
-	const float xOffset = ((float)winWidth - gridWidth) * 0.5f;
+	const float xOffset = ((float)winWidth - gridWidth) * 0.5f + gridLineThickness * 0.5f * 0.5f;
 	for(int i = 0; i < amtOfVertLines; ++i){
 		modelStack.PushModel({
-			modelStack.Translate(glm::vec3(xOffset + gridCellWidth * (float)i, (float)winHeight / 2.0f, 0.0f)),
-			modelStack.Rotate(glm::vec4(0.0f, 0.0f, 1.0f, -90.0f)),
-			modelStack.Scale(glm::vec3(gridHeight, 1.0f, 1.0f)),
+			modelStack.Translate(glm::vec3(xOffset + gridCellWidth * (float)i + gridLineThickness * 0.5f * (float)i, (float)winHeight * 0.5f, 0.0f)),
+			modelStack.Scale(glm::vec3(gridLineThickness * 0.5f, gridHeight * 0.5f, 1.0f)),
 		});
 			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
-			meshes[(int)MeshType::Line]->SetModel(modelStack.GetTopModel());
-			meshes[(int)MeshType::Line]->Render(forwardSP);
+			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
 	}
 
 	///Render translucent block
-	const float xTranslate = (float)int((lastX - fmod((float)winWidth, gridCellWidth) * 0.5f) / gridCellWidth) * gridCellWidth
-		+ gridCellWidth * 0.5f
-		+ fmod((float)winWidth, gridCellWidth) * 0.5f;
-	const float yTranslate = (float)int(((float)winHeight - lastY) / gridCellHeight) * gridCellHeight + gridCellHeight * 0.5f;
+	const float myOffset = (winWidth - gridWidth) * 0.5f;
+	const float xTranslate = (float)int((lastX + myOffset) / gridCellWidth) * gridCellWidth - myOffset;
+	const float yTranslate = (float)int(((float)winHeight - lastY) / gridCellHeight) * gridCellHeight + 0.5f * gridCellHeight;
 
-	if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
+	extern bool LMB;
+	extern bool RMB;
+	if(LMB){
+		printf((std::to_string(fmod((float)winWidth, gridCellWidth) * 0.5f) + '\n').c_str());
+	}
+
+	//if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
 		modelStack.PushModel({
 			modelStack.Translate(glm::vec3(
 				xTranslate,
@@ -232,7 +192,7 @@ void MyScene::ForwardRender(){
 			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
-	}
+	//}
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);

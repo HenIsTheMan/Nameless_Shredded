@@ -1,18 +1,20 @@
 template <class T>
 Grid<T>::Grid():
 	Grid(
-	(T)0,
-	(T)0,
-	0,
-	0
+		(T)0,
+		(T)0,
+		(T)0,
+		0,
+		0
 	)
 {
 }
 
 template <class T>
-Grid<T>::Grid(T cellWidth, T cellHeight, int rows, int cols):
+Grid<T>::Grid(T cellWidth, T cellHeight, T lineThickness, int rows, int cols):
 	im_CellWidth(cellWidth),
 	im_CellHeight(cellHeight),
+	im_LineThickness(lineThickness),
 	im_Rows(rows),
 	im_Cols(cols)
 {
@@ -26,6 +28,11 @@ T Grid<T>::GetCellWidth() const{
 template <class T>
 T Grid<T>::GetCellHeight() const{
 	return im_CellHeight;
+}
+
+template <class T>
+T Grid<T>::GetLineThickness() const{
+	return im_LineThickness;
 }
 
 template <class T>
@@ -46,6 +53,11 @@ void Grid<T>::SetCellWidth(T cellWidth){
 template <class T>
 void Grid<T>::SetCellHeight(T cellHeight){
 	im_CellHeight = cellHeight;
+}
+
+template <class T>
+void Grid<T>::SetLineThickness(T lineThickness){
+	im_LineThickness = lineThickness;
 }
 
 template <class T>

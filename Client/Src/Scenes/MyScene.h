@@ -17,11 +17,14 @@ public:
 	void ForwardRender();
 	void DefaultRender(const uint& screenTexRefID);
 private:
-	float lineWidth;
+	float gridCellWidth;
+	float gridCellHeight;
+	float gridLineThickness;
+	int gridRows;
+	int gridCols;
 	Grid<float> grid;
 
 	enum struct MeshType{
-		Line,
 		Quad,
 		SpriteAni,
 		Amt
