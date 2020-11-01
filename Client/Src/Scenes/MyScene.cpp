@@ -109,7 +109,7 @@ void MyScene::Update(float dt){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->Update(dt);
 
 	static float polyModeBT = 0.f;
-	if(Key(GLFW_KEY_F2) && polyModeBT <= elapsedTime){
+	if(Key(VK_F2) && polyModeBT <= elapsedTime){
 		polyMode += polyMode == GL_FILL ? -2 : 1;
 		glPolygonMode(GL_FRONT_AND_BACK, polyMode);
 		polyModeBT = elapsedTime + .5f;
@@ -175,8 +175,7 @@ void MyScene::ForwardRender(){
 	const float offsetX = (quotX & 1 ? resultX - unitX : resultX) * 0.5f;
 	const float xTranslate = std::floor((lastX - offsetX) / unitX) * unitX
 		+ offsetX
-		+ gridCellWidth * 0.5f + gridLineThickness * 0.5f
-		;
+		+ gridCellWidth * 0.5f + gridLineThickness * 0.5f;
 
 	int quotY; //Used for checking if len of y end regions combined is >= unitY
 	const float unitY = gridCellHeight + gridLineThickness * 0.5f;
@@ -184,20 +183,9 @@ void MyScene::ForwardRender(){
 	const float offsetY = (quotY & 1 ? resultY - unitY : resultY) * 0.5f;
 	const float yTranslate = std::floor((winHeight - lastY - offsetY) / unitY) * unitY
 		+ offsetY
-		+ gridCellHeight * 0.5f + gridLineThickness * 0.5f
-		;
+		+ gridCellHeight * 0.5f + gridLineThickness * 0.5f;
 
-	extern bool LMB;
-	static bool pressed = false;
-	if(!pressed && LMB){
-		printf((std::to_string(offsetX) + '\n').c_str());
-		printf((std::to_string(offsetY) + "\n\n").c_str());
-		pressed = true;
-	} else if(pressed && !LMB){
-		pressed = false;
-	}
-
-	//if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
+	if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
 		modelStack.PushModel({
 			modelStack.Translate(glm::vec3(
 				xTranslate,
@@ -210,7 +198,7 @@ void MyScene::ForwardRender(){
 			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
-	//}
+	}
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);
