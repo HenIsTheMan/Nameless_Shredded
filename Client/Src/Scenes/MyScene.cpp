@@ -169,19 +169,33 @@ void MyScene::ForwardRender(){
 	}
 
 	///Render translucent block
-	const float factorX = gridCellWidth + gridLineThickness * 0.5f;
-	const float offsetX = fmod(winWidth - gridLineThickness * 0.5f, factorX) * 0.5f;
-	const float xTranslate = (float)int((lastX - offsetX) / factorX) * factorX + offsetX + gridCellWidth * 0.5f + gridLineThickness * 0.5f;
+	int quotX; //Used for checking if len of x end regions combined is >= unitX
+	const float unitX = gridCellWidth + gridLineThickness * 0.5f;
+	const float resultX = remquof(winWidth - gridLineThickness * 0.5f, unitX, &quotX);
+	const float offsetX = (quotX & 1 ? resultX - unitX : resultX) * 0.5f;
+	const float xTranslate = std::floor((lastX - offsetX) / unitX) * unitX
+		+ offsetX
+		+ gridCellWidth * 0.5f + gridLineThickness * 0.5f
+		;
 
-	const float factorY = gridCellHeight + gridLineThickness * 0.5f;
-	const float offsetY = fmod(winHeight - gridLineThickness * 0.5f, factorY) * 0.5f;
-	const float yTranslate = (float)int((winHeight - lastY - offsetY) / factorY) * factorY + offsetY + gridCellHeight * 0.5f + gridLineThickness * 0.5f;
+	int quotY; //Used for checking if len of y end regions combined is >= unitY
+	const float unitY = gridCellHeight + gridLineThickness * 0.5f;
+	const float resultY = remquof(winHeight - gridLineThickness * 0.5f, unitY, &quotY);
+	const float offsetY = (quotY & 1 ? resultY - unitY : resultY) * 0.5f;
+	const float yTranslate = std::floor((winHeight - lastY - offsetY) / unitY) * unitY
+		+ offsetY
+		+ gridCellHeight * 0.5f + gridLineThickness * 0.5f
+		;
 
-	//extern bool LMB;
-	//extern bool RMB;
-	//if(LMB){
-	//	printf((std::to_string(fmod((float)winWidth, gridCellWidth) * 0.5f) + '\n').c_str());
-	//}
+	extern bool LMB;
+	static bool pressed = false;
+	if(!pressed && LMB){
+		printf((std::to_string(offsetX) + '\n').c_str());
+		printf((std::to_string(offsetY) + "\n\n").c_str());
+		pressed = true;
+	} else if(pressed && !LMB){
+		pressed = false;
+	}
 
 	//if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
 		modelStack.PushModel({
