@@ -26,7 +26,7 @@ MyScene::MyScene():
 			{"Imgs/BoxSpec.png", Mesh::TexType::Spec, 0},
 			{"Imgs/BoxEmission.png", Mesh::TexType::Emission, 0},
 		}),
-		new SpriteAni(4, 8),
+		new SpriteAni(18, 4),
 	},
 	forwardSP{"Shaders/Forward.vs", "Shaders/Forward.fs"},
 	screenSP{"Shaders/Quad.vs", "Shaders/Screen.fs"},
@@ -76,9 +76,9 @@ MyScene::~MyScene(){
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
-	meshes[(int)MeshType::SpriteAni]->AddTexMap({"Imgs/Fire.png", Mesh::TexType::Diffuse, 0});
-	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->AddAni("FireSpriteAni", 0, 32);
-	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->Play("FireSpriteAni", -1, .5f);
+	meshes[(int)MeshType::BG]->AddTexMap({"Imgs/BG.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::BG])->AddAni("BG", 0, 72);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::BG])->Play("BG", -1, 5.f);
 
 	spotlights.emplace_back(CreateLight(LightType::Spot));
 
@@ -106,7 +106,7 @@ void MyScene::Update(float dt){
 	static_cast<Spotlight*>(spotlights[0])->cosInnerCutoff = cosf(glm::radians(12.5f));
 	static_cast<Spotlight*>(spotlights[0])->cosOuterCutoff = cosf(glm::radians(17.5f));
 
-	static_cast<SpriteAni*>(meshes[(int)MeshType::SpriteAni])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::BG])->Update(dt);
 
 	static float polyModeBT = 0.f;
 	if(Key(VK_F2) && polyModeBT <= elapsedTime){
@@ -270,6 +270,16 @@ void MyScene::ForwardRender(){
 			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
 	}
+
+	///BG
+	modelStack.PushModel({
+		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
+		modelStack.Scale(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 1.0f)),
+	});
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
+		meshes[(int)MeshType::BG]->SetModel(modelStack.GetTopModel());
+		meshes[(int)MeshType::BG]->Render(forwardSP);
+	modelStack.PopModel();
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);

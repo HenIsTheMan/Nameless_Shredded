@@ -26,7 +26,7 @@ private:
 
 	enum struct MeshType{
 		Quad,
-		SpriteAni,
+		BG,
 		Amt
 	};
 	Mesh* meshes[(int)MeshType::Amt];
