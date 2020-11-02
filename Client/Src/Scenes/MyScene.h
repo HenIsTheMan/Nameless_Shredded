@@ -26,6 +26,7 @@ private:
 
 	enum struct MeshType{
 		Quad,
+		QuadWithTex,
 		BG,
 		Amt
 	};

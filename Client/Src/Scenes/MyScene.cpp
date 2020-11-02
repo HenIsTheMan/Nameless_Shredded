@@ -14,13 +14,15 @@ extern float lastY;
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
 MyScene::MyScene():
-	gridCellWidth(50.0f),
-	gridCellHeight(50.0f),
-	gridLineThickness(5.0f),
-	gridRows(10),
-	gridCols(10),
+	gridCellWidth(45.0f),
+	gridCellHeight(45.0f),
+	gridLineThickness(2.0f),
+	gridRows(20),
+	gridCols(20),
 	grid(Grid<float>(0.0f, 0.0f, 0.0f, 0, 0)),
 	meshes{
+		new Mesh(Mesh::MeshType::Quad, GL_TRIANGLES, {
+		}),
 		new Mesh(Mesh::MeshType::Quad, GL_TRIANGLES, {
 			{"Imgs/BoxAlbedo.png", Mesh::TexType::Diffuse, 0},
 			{"Imgs/BoxSpec.png", Mesh::TexType::Spec, 0},
@@ -221,7 +223,7 @@ void MyScene::ForwardRender(){
 			modelStack.Translate(glm::vec3((float)winWidth * 0.5f, yOffset + gridCellHeight * (float)i + gridLineThickness * 0.5f * (float)i, 0.0f)),
 			modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridLineThickness * 0.5f, 1.0f)),
 		});
-			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
+			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.6f), 1.f));
 			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
@@ -233,7 +235,7 @@ void MyScene::ForwardRender(){
 			modelStack.Translate(glm::vec3(xOffset + gridCellWidth * (float)i + gridLineThickness * 0.5f * (float)i, (float)winHeight * 0.5f, 0.0f)),
 			modelStack.Scale(glm::vec3(gridLineThickness * 0.5f, gridHeight * 0.5f, 1.0f)),
 		});
-			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
+			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.6f), 1.f));
 			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 			meshes[(int)MeshType::Quad]->Render(forwardSP);
 		modelStack.PopModel();
@@ -266,10 +268,20 @@ void MyScene::ForwardRender(){
 			modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
 		});
 			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.2f));
-			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
-			meshes[(int)MeshType::Quad]->Render(forwardSP);
+			meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
 		modelStack.PopModel();
 	}
+
+	///GridBG
+	modelStack.PushModel({
+		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
+		modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridHeight * 0.5f, 1.0f)),
+	});
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.0f), 1.f));
+		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+		meshes[(int)MeshType::Quad]->Render(forwardSP);
+	modelStack.PopModel();
 
 	///BG
 	modelStack.PushModel({
