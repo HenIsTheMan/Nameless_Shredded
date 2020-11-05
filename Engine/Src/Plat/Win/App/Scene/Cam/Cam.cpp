@@ -34,7 +34,7 @@ glm::vec3 Cam::CalcFront(const bool& normalised) const{
 
 glm::vec3 Cam::CalcRight() const{
 	const glm::vec3 front = CalcFront();
-	const glm::vec3 camRight = glm::cross(front, {0.0f, 1.0f * -front.z / abs(front.z), 0.0f});
+	const glm::vec3 camRight = glm::cross(front, {0.0f, -front.z / abs(front.z), 0.0f});
 	return camRight != glm::vec3(0.f) ? glm::normalize(camRight) : glm::vec3(1.0f, 0.0f, 0.0f);
 }
 
@@ -78,7 +78,7 @@ void Cam::Update(float dt, const int& up, const int& down, const int& left, cons
 	target = pos + camFront;
 
 	glm::quat pitchQuat = glm::angleAxis(glm::radians(pitch), CalcRight());
-	glm::quat yawQuat = glm::angleAxis(glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::quat yawQuat = glm::angleAxis(glm::radians(yaw), glm::vec3(0.0f, camFront.z < 0.0f ? 1.0f : -1.0f, 0.0f));
 	target = pos + yawQuat * pitchQuat * camFront;
 	yaw = pitch = 0.f;
 }
