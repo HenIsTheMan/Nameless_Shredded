@@ -18,5 +18,6 @@
     <ClInclude Include="Src\Scenes\YesScene.h" />
     <ClInclude Include="Src\DM2242\Grid.h" />
     <ClInclude Include="Src\DM2242\TextRenderer.h" />
+    <ClInclude Include="Src\DM2242\EntityType.hpp" />
   </ItemGroup>
 </Project>

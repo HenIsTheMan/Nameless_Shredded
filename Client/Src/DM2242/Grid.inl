@@ -8,6 +8,7 @@ Grid<T>::Grid():
 		0
 	)
 {
+	UpdateData();
 }
 
 template <class T>
@@ -18,6 +19,12 @@ Grid<T>::Grid(T cellWidth, T cellHeight, T lineThickness, int rows, int cols):
 	im_Rows(rows),
 	im_Cols(cols)
 {
+	UpdateData();
+}
+
+template <class T>
+void Grid<T>::SetData(EntityType data, ptrdiff_t row, ptrdiff_t col){
+	this->data[row][col] = data;
 }
 
 template <class T>
@@ -63,9 +70,36 @@ void Grid<T>::SetLineThickness(T lineThickness){
 template <class T>
 void Grid<T>::SetRows(int rows){
 	im_Rows = rows;
+	UpdateData();
 }
 
 template <class T>
 void Grid<T>::SetCols(int cols){
 	im_Cols = cols;
+	UpdateData();
+}
+
+template <class T>
+void Grid<T>::UpdateData(){
+	std::vector<std::vector<EntityType>> oldData = data; //Make copy of data
+	data = std::vector<std::vector<EntityType>>(im_Rows);
+
+	///Create vars
+	size_t i, j;
+	const size_t oldDataSize = oldData.size();
+
+	for(i = (size_t)0; i < im_Rows; ++i){
+		data[i] = std::vector<EntityType>(im_Cols);
+		for(j = (size_t)0; j < im_Cols; ++j){
+			data[i][j] = EntityType::Null; //All data becomes EntityType::Null
+		}
+	}
+
+	for(i = (size_t)0; i < (im_Rows < oldDataSize ? im_Rows : oldDataSize); ++i){
+		const size_t amtOfCols = data[i].size();
+		const size_t oldAmtOfCols = oldData[i].size();
+		for(j = (size_t)0; j < (amtOfCols < oldAmtOfCols ? amtOfCols : oldAmtOfCols); ++j){
+			data[i][j] = oldData[i][j];
+		}
+	}
 }

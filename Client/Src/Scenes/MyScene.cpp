@@ -39,6 +39,7 @@ MyScene::MyScene():
 	cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f), 0.f, 150.f),
 	view(glm::mat4(1.f)),
 	projection(glm::mat4(1.f)),
+	FPS(0.0f),
 	elapsedTime(0.f),
 	polyMode(0),
 	modelStack()
@@ -90,7 +91,6 @@ bool MyScene::Init(){
 
 void MyScene::Update(float dt){
 	FPS = 1.0f / dt;
-
 	elapsedTime += dt;
 	if(winHeight){ //Avoid division by 0 when win is minimised
 		cam.SetDefaultAspectRatio(float(winWidth) / float(winHeight));
@@ -244,6 +244,16 @@ void MyScene::ForwardRender(){
 		modelStack.PopModel();
 	}
 
+	///GridBG
+	modelStack.PushModel({
+		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
+		modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridHeight * 0.5f, 1.0f)),
+	});
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.0f), 1.f));
+		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+		meshes[(int)MeshType::Quad]->Render(forwardSP);
+	modelStack.PopModel();
+
 	///Render translucent block
 	int quotX; //Used for checking if len of x end regions combined is >= unitX
 	const float unitX = gridCellWidth + gridLineThickness * 0.5f;
@@ -266,7 +276,7 @@ void MyScene::ForwardRender(){
 			modelStack.Translate(glm::vec3(
 				xTranslate,
 				yTranslate,
-				0.0f
+				0.5f
 			)),
 			modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
 		});
@@ -276,15 +286,7 @@ void MyScene::ForwardRender(){
 		modelStack.PopModel();
 	}
 
-	///GridBG
-	modelStack.PushModel({
-		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
-		modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridHeight * 0.5f, 1.0f)),
-	});
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.0f), 1.f));
-		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
-		meshes[(int)MeshType::Quad]->Render(forwardSP);
-	modelStack.PopModel();
+	///Render grid data
 
 	///BG
 	modelStack.PushModel({

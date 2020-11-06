@@ -27,8 +27,6 @@ private:
 
 	TextRenderer textRenderer;
 
-	float FPS;
-
 	enum struct MeshType{
 		Quad,
 		QuadWithTex,
@@ -48,6 +46,7 @@ private:
 	glm::mat4 view;
 	glm::mat4 projection;
 
+	float FPS;
 	float elapsedTime;
 	int polyMode;
 	ModelStack modelStack;

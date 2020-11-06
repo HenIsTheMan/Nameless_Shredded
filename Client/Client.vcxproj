@@ -209,6 +209,7 @@
     <None Include="Src\DM2242\TextRenderer.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\DM2242\EntityType.hpp" />
     <ClInclude Include="Src\DM2242\Grid.h" />
     <ClInclude Include="Src\DM2242\TextRenderer.h" />
     <ClInclude Include="Src\Scenes\MyScene.h" />
