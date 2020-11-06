@@ -249,9 +249,6 @@ void MyScene::ForwardRender(){
 	RenderGridBG(gridWidth, gridHeight);
 	RenderGridData(gridWidth, gridHeight);
 	RenderTranslucentBlock(gridWidth, gridHeight);
-	grid.SetData(EntityType::Block, 0, 0);
-	grid.SetData(EntityType::Block, 1, 0);
-	grid.SetData(EntityType::Block, 0, 1);
 	RenderBG();
 
 	forwardSP.Set1i("useCustomColour", 0);
