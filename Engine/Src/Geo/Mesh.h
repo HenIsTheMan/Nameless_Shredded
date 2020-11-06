@@ -47,6 +47,7 @@ public:
 
 	void InstancedRender(ShaderProg& SP, const bool& autoConfig = true);
 	virtual void Render(ShaderProg& SP, const bool& autoConfig = true);
+	void RenderText(ShaderProg& SP, unsigned offset, const bool& autoConfig = true);
 	void SetModel(const glm::mat4& model);
 protected:
 	MeshType type;
@@ -72,4 +73,5 @@ protected:
 	void CreateCube(); //2x2x2
 	void CreateSphere(); //2x2x2
 	void CreateCylinder(); //2x2x2
+	void CreateText(); //1x1
 };

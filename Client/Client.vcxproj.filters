@@ -11,10 +11,12 @@
     <None Include="Shaders\Quad.vs" />
     <None Include="Shaders\Screen.fs" />
     <None Include="Src\DM2242\Grid.inl" />
+    <None Include="Src\DM2242\TextRenderer.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Scenes\MyScene.h" />
     <ClInclude Include="Src\Scenes\YesScene.h" />
     <ClInclude Include="Src\DM2242\Grid.h" />
+    <ClInclude Include="Src\DM2242\TextRenderer.h" />
   </ItemGroup>
 </Project>

@@ -380,6 +380,103 @@ void Mesh::Render(ShaderProg& SP, const bool& autoConfig){
 	}
 }
 
+void Mesh::RenderText(ShaderProg& SP, unsigned offset, const bool& autoConfig){
+	if(primitive < 0){
+		return (void)puts("Invalid primitive!\n");
+	}
+
+	SP.Use();
+	SP.SetMat4fv("model", &(model)[0][0]);
+	if(autoConfig){
+		SP.Set1i("instancing", 0);
+
+		SP.Set1i("useDiffuseMap", 0);
+		SP.Set1i("useSpecMap", 0);
+		SP.Set1i("useEmissionMap", 0);
+		SP.Set1i("useReflectionMap", 0);
+		SP.Set1i("useBumpMap", 0);
+
+		short diffuseCount = 0;
+		for(std::tuple<str, TexType, uint>& texMap: texMaps){
+			if(!std::get<uint>(texMap)){
+				SetUpTex({
+					std::get<str>(texMap),
+					true,
+					GL_TEXTURE_2D,
+					GL_REPEAT,
+					GL_LINEAR_MIPMAP_LINEAR,
+					GL_LINEAR,
+					//GL_CLAMP_TO_EDGE,
+					//GL_NEAREST,
+					//GL_LINEAR,
+					}, std::get<uint>(texMap));
+			}
+
+			switch(std::get<TexType>(texMap)){
+				case TexType::Diffuse:
+					SP.Set1i("useDiffuseMap", 1);
+					SP.UseTex(("diffuseMaps[" + std::to_string(diffuseCount++) + ']').c_str(), std::get<uint>(texMap));
+					break;
+				case TexType::Spec:
+					SP.Set1i("useSpecMap", 1);
+					SP.UseTex("specMap", std::get<uint>(texMap));
+					break;
+				case TexType::Emission:
+					SP.Set1i("useEmissionMap", 1);
+					SP.UseTex("emissionMap", std::get<uint>(texMap));
+					break;
+				case TexType::Reflection:
+					SP.Set1i("useReflectionMap", 1);
+					SP.UseTex("reflectionMap", std::get<uint>(texMap));
+					break;
+				case TexType::Bump:
+					SP.Set1i("useBumpMap", 1);
+					SP.UseTex("bumpMap", std::get<uint>(texMap));
+					break;
+			}
+		}
+	}
+
+	if(!VAO){
+		CreateText();
+
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(Vertex), &(*vertices)[0], GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, pos));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, colour));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoords));
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tangent));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, diffuseTexIndex));
+
+		if(indices){
+			glGenBuffers(1, &EBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->size() * sizeof(uint), &(*indices)[0], GL_STATIC_DRAW);
+		}
+	} else{
+		glBindVertexArray(VAO);
+	}
+
+	//indices ? glDrawElements(primitive, (int)indices->size(), GL_UNSIGNED_INT, nullptr) : glDrawArrays(primitive, 0, (int)vertices->size());
+	indices ? glDrawElements(primitive, (int)indices->size(), GL_UNSIGNED_INT, (void*)(offset * sizeof(GLuint))) : glDrawArrays(primitive, 0, (int)vertices->size());
+	glBindVertexArray(0);
+	if(autoConfig){
+		SP.ResetTexUnits();
+	}
+}
+
 const Mesh::MeshType& Mesh::GetMeshType() const{
 	return type;
 }
@@ -660,6 +757,67 @@ void Mesh::CreateCylinder(){
 
 			indices->emplace_back(slice + 1 + sliceAmt * 3 + 3 + 1); //+1 at the end as +1 vertex before for loop
 			indices->emplace_back(0 + sliceAmt * 3 + 3 + 1); //...
+		}
+	}
+}
+
+void Mesh::CreateText(){
+	if(!vertices){
+		const unsigned rows = 16;
+		const unsigned cols = 16;
+
+		const float width = 1.0f / (float)rows;
+		const float height = 1.0f / (float)cols;
+
+		vertices = new std::vector<Vertex>();
+		if(indices){
+			delete indices;
+			indices = nullptr;
+		}
+		indices = new std::vector<uint>();
+		int offset = 0;
+
+		for(unsigned i = 0; i < rows; ++i){
+			for(unsigned j = 0; j < cols; ++j){
+				const float u1 = j * width;
+				const float v1 = 1.f - height - i * height;
+
+				vertices->emplace_back(Vertex{
+					glm::vec3(-0.5f, -0.5f, 0.0f),
+					glm::vec4(.7f, .4f, .1f, 1.f),
+					glm::vec2(u1, v1),
+					glm::vec3(0.f, 0.f, 1.f),
+					});
+
+				vertices->emplace_back(Vertex{
+					glm::vec3(0.5f, -0.5f, 0.0f),
+					glm::vec4(.7f, .4f, .1f, 1.f),
+					glm::vec2(u1 + width, v1),
+					glm::vec3(0.f, 0.f, 1.f),
+					});
+
+				vertices->emplace_back(Vertex{
+					glm::vec3(0.5f, 0.5f, 0.0f),
+					glm::vec4(.7f, .4f, .1f, 1.f),
+					glm::vec2(u1 + width, v1 + height),
+					glm::vec3(0.f, 0.f, 1.f),
+					});
+
+				vertices->emplace_back(Vertex{
+					glm::vec3(-0.5f, 0.5f, 0.0f),
+					glm::vec4(.7f, .4f, .1f, 1.f),
+					glm::vec2(u1, v1 + height),
+					glm::vec3(0.f, 0.f, 1.f),
+					});
+
+				indices->emplace_back(offset + 0);
+				indices->emplace_back(offset + 1);
+				indices->emplace_back(offset + 2);
+				indices->emplace_back(offset + 0);
+				indices->emplace_back(offset + 2);
+				indices->emplace_back(offset + 3);
+				offset += 4;
+			}
 		}
 	}
 }

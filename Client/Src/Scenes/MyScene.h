@@ -7,6 +7,7 @@
 #include "Graphics/ShaderProg.h"
 
 #include "../DM2242/Grid.h"
+#include "../DM2242/TextRenderer.h"
 
 class MyScene final{
 public:
@@ -23,6 +24,8 @@ private:
 	int gridRows;
 	int gridCols;
 	Grid<float> grid;
+
+	TextRenderer textRenderer;
 
 	enum struct MeshType{
 		Quad,

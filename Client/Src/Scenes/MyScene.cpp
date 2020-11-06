@@ -20,6 +20,7 @@ MyScene::MyScene():
 	gridRows(20),
 	gridCols(20),
 	grid(Grid<float>(0.0f, 0.0f, 0.0f, 0, 0)),
+	textRenderer(),
 	meshes{
 		new Mesh(Mesh::MeshType::Quad, GL_TRIANGLES, {
 		}),
@@ -295,6 +296,17 @@ void MyScene::ForwardRender(){
 
 	forwardSP.Set1i("useCustomColour", 0);
 	forwardSP.Set1i("noNormals", 0);
+
+	textRenderer.RenderText(forwardSP, {
+		(str)"Hello World!",
+		0.0f,
+		0.0f,
+		50.0f,
+		glm::vec4(1.0f),
+		0,
+		TextRenderer::TextAlignment::Left,
+		50.0f
+	});
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 }

@@ -25,7 +25,7 @@ void TextRenderer::RenderText(ShaderProg& SP, const TextAttribs& attribs){
 
 	for(unsigned i = 0; i < attribs.text.length(); ++i){
         glm::mat4 transform = glm::mat4();
-        transform = glm::translate(transform, glm::vec3((float)winWidth * 0.5f + attribs.charSpacing * i + attribs.x, (float)winHeight * 0.5f + attribs.y, 0.0f));
+        transform = glm::translate(transform, glm::vec3((float)winWidth * 0.5f + attribs.charSpacing * i + attribs.x, (float)winHeight * 0.5f + attribs.y, 1.0f));
         transform = glm::scale(transform, glm::vec3(attribs.scaleFactor, attribs.scaleFactor, 1.0f));
 		mesh->SetModel(transform);
 
