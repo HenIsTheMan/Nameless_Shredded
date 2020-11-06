@@ -18,15 +18,6 @@ public:
 	void ForwardRender();
 	void DefaultRender(const uint& screenTexRefID);
 private:
-	float gridCellWidth;
-	float gridCellHeight;
-	float gridLineThickness;
-	int gridRows;
-	int gridCols;
-	Grid<float> grid;
-
-	TextRenderer textRenderer;
-
 	enum struct MeshType{
 		Quad,
 		QuadWithTex,
@@ -50,4 +41,15 @@ private:
 	float elapsedTime;
 	int polyMode;
 	ModelStack modelStack;
+
+	float gridCellWidth;
+	float gridCellHeight;
+	float gridLineThickness;
+	int gridRows;
+	int gridCols;
+	Grid<float> grid;
+	TextRenderer textRenderer;
+
+	void RenderGrid(float amtOfHorizLines, float amtOfVertLines, float gridWidth, float gridHeight);
+	void RenderGridBG(float gridWidth, float gridHeight);
 };
