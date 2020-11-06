@@ -301,11 +301,12 @@ void MyScene::ForwardRender(){
 		(str)"Hello World!",
 		0.0f,
 		0.0f,
+		1.0f,
+		40.0f,
 		50.0f,
+		TextRenderer::TextAlignment::Left,
 		glm::vec4(1.0f),
 		0,
-		TextRenderer::TextAlignment::Left,
-		50.0f
 	});
 
 	glBlendFunc(GL_ONE, GL_ZERO);

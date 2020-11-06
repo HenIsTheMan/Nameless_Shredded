@@ -403,12 +403,9 @@ void Mesh::RenderText(ShaderProg& SP, unsigned offset, const bool& autoConfig){
 					std::get<str>(texMap),
 					true,
 					GL_TEXTURE_2D,
-					GL_REPEAT,
-					GL_LINEAR_MIPMAP_LINEAR,
+					GL_CLAMP_TO_EDGE,
+					GL_NEAREST,
 					GL_LINEAR,
-					//GL_CLAMP_TO_EDGE,
-					//GL_NEAREST,
-					//GL_LINEAR,
 					}, std::get<uint>(texMap));
 			}
 
@@ -469,7 +466,6 @@ void Mesh::RenderText(ShaderProg& SP, unsigned offset, const bool& autoConfig){
 		glBindVertexArray(VAO);
 	}
 
-	//indices ? glDrawElements(primitive, (int)indices->size(), GL_UNSIGNED_INT, nullptr) : glDrawArrays(primitive, 0, (int)vertices->size());
 	indices ? glDrawElements(primitive, (int)indices->size(), GL_UNSIGNED_INT, (void*)(offset * sizeof(GLuint))) : glDrawArrays(primitive, 0, (int)vertices->size());
 	glBindVertexArray(0);
 	if(autoConfig){

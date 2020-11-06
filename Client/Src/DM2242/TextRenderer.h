@@ -15,11 +15,12 @@ public:
 		str text = str();
 		float x = 0.0f;
 		float y = 0.0f;
+		float z = 0.0f;
 		float scaleFactor = 1.0f;
+		float charSpacing = 0.0f;
+		TextAlignment alignment = TextAlignment::Left;
 		glm::vec4 colour = glm::vec4(1.0f);
 		uint texRefID = 0;
-		TextAlignment alignment = TextAlignment::Left;
-		float charSpacing = 0.0f;
 	};
 
 	inline TextRenderer();

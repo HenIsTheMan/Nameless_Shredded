@@ -17,18 +17,19 @@ TextRenderer::~TextRenderer(){
 }
 
 void TextRenderer::RenderText(ShaderProg& SP, const TextAttribs& attribs){
-    //SP.Use();
-    //SP.Set4fv("textColour", attribs.colour);
-    //SP.SetMat4fv("projection", &projection[0][0]);
-
     //Centralise
 
+    SP.Set1i("noNormals", 1);
+    SP.Set1i("useCustomColour", 1);
+    SP.Set4fv("customColour", attribs.colour);
 	for(unsigned i = 0; i < attribs.text.length(); ++i){
         glm::mat4 transform = glm::mat4();
-        transform = glm::translate(transform, glm::vec3((float)winWidth * 0.5f + attribs.charSpacing * i + attribs.x, (float)winHeight * 0.5f + attribs.y, 1.0f));
+        transform = glm::translate(transform, glm::vec3(attribs.x + attribs.charSpacing * i, attribs.y, attribs.z));
         transform = glm::scale(transform, glm::vec3(attribs.scaleFactor, attribs.scaleFactor, 1.0f));
 		mesh->SetModel(transform);
 
 		mesh->RenderText(SP, (unsigned)attribs.text[i] * 6, true);
 	}
+    SP.Set1i("useCustomColour", 0);
+    SP.Set1i("noNormals", 0);
 }
