@@ -286,7 +286,32 @@ void MyScene::ForwardRender(){
 		modelStack.PopModel();
 	}
 
+	//grid.SetData(EntityType::Block, 0, 0);
+	grid.SetData(EntityType::Block, 1, 0);
+	//grid.SetData(EntityType::Block, 0, 1);
+
 	///Render grid data
+	const std::vector<std::vector<EntityType>>& gridData = grid.GetData();
+	for(size_t i = (size_t)0; i < gridRows; ++i){
+		for(size_t j = (size_t)0; j < gridCols; ++j){
+			modelStack.PushModel({
+				modelStack.Translate(glm::vec3(
+					xOffset - gridLineThickness * 0.5f * 0.5f + gridLineThickness * 0.5f * (i + 1) + gridCellWidth * 0.5f * (i + 1),
+					yOffset - gridLineThickness * 0.5f * 0.5f + gridLineThickness * 0.5f * (i + 1) + gridCellHeight * 0.5f * (i + 1),
+					0.7f
+				)),
+				modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
+			});
+				forwardSP.Set4fv("customColour", glm::vec4(1.0f));
+				switch(gridData[i][j]){
+					case EntityType::Block:
+						meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
+						meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
+						break;
+				}
+			modelStack.PopModel();
+		}
+	}
 
 	///BG
 	modelStack.PushModel({
