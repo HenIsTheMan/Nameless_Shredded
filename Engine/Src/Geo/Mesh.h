@@ -69,7 +69,7 @@ protected:
 
 	glm::mat4 model;
 	void CreateLine(); //1x0
-	void CreateQuad(); //2x2
+	void CreateQuad(); //1x1
 	void CreateCube(); //2x2x2
 	void CreateSphere(); //2x2x2
 	void CreateCylinder(); //2x2x2

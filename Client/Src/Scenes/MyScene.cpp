@@ -220,103 +220,103 @@ void MyScene::ForwardRender(){
 	const float gridWidth = gridCols * gridCellWidth + amtOfVertLines * gridLineThickness * 0.5f;
 	const float gridHeight = gridRows * gridCellHeight + amtOfHorizLines * gridLineThickness * 0.5f;
 
-	const float yOffset = ((float)winHeight - gridHeight) * 0.5f + gridLineThickness * 0.5f * 0.5f;
-	for(int i = 0; i < amtOfHorizLines; ++i){
-		modelStack.PushModel({
-			modelStack.Translate(glm::vec3((float)winWidth * 0.5f, yOffset + gridCellHeight * (float)i + gridLineThickness * 0.5f * (float)i, 0.0f)),
-			modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridLineThickness * 0.5f, 1.0f)),
-		});
-			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.6f), 1.f));
-			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
-			meshes[(int)MeshType::Quad]->Render(forwardSP);
-		modelStack.PopModel();
-	}
+	//const float yOffset = ((float)winHeight - gridHeight) * 0.5f + gridLineThickness * 0.5f * 0.5f;
+	//for(int i = 0; i < amtOfHorizLines; ++i){
+	//	modelStack.PushModel({
+	//		modelStack.Translate(glm::vec3((float)winWidth * 0.5f, yOffset + gridCellHeight * (float)i + gridLineThickness * 0.5f * (float)i, 0.0f)),
+	//		modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridLineThickness * 0.5f, 1.0f)),
+	//	});
+	//		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.6f), 1.f));
+	//		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+	//		meshes[(int)MeshType::Quad]->Render(forwardSP);
+	//	modelStack.PopModel();
+	//}
 
-	const float xOffset = ((float)winWidth - gridWidth) * 0.5f + gridLineThickness * 0.5f * 0.5f;
-	for(int i = 0; i < amtOfVertLines; ++i){
-		modelStack.PushModel({
-			modelStack.Translate(glm::vec3(xOffset + gridCellWidth * (float)i + gridLineThickness * 0.5f * (float)i, (float)winHeight * 0.5f, 0.0f)),
-			modelStack.Scale(glm::vec3(gridLineThickness * 0.5f, gridHeight * 0.5f, 1.0f)),
-		});
-			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.6f), 1.f));
-			meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
-			meshes[(int)MeshType::Quad]->Render(forwardSP);
-		modelStack.PopModel();
-	}
+	//const float xOffset = ((float)winWidth - gridWidth) * 0.5f + gridLineThickness * 0.5f * 0.5f;
+	//for(int i = 0; i < amtOfVertLines; ++i){
+	//	modelStack.PushModel({
+	//		modelStack.Translate(glm::vec3(xOffset + gridCellWidth * (float)i + gridLineThickness * 0.5f * (float)i, (float)winHeight * 0.5f, 0.0f)),
+	//		modelStack.Scale(glm::vec3(gridLineThickness * 0.5f, gridHeight * 0.5f, 1.0f)),
+	//	});
+	//		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.6f), 1.f));
+	//		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+	//		meshes[(int)MeshType::Quad]->Render(forwardSP);
+	//	modelStack.PopModel();
+	//}
 
 	///GridBG
 	modelStack.PushModel({
 		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
-		modelStack.Scale(glm::vec3(gridWidth * 0.5f, gridHeight * 0.5f, 1.0f)),
+		modelStack.Scale(glm::vec3(gridWidth, gridHeight, 1.0f)),
 	});
 		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.0f), 1.f));
 		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 		meshes[(int)MeshType::Quad]->Render(forwardSP);
 	modelStack.PopModel();
 
-	///Render translucent block
-	int quotX; //Used for checking if len of x end regions combined is >= unitX
-	const float unitX = gridCellWidth + gridLineThickness * 0.5f;
-	const float resultX = remquof(winWidth - gridLineThickness * 0.5f, unitX, &quotX);
-	const float offsetX = (gridCols & 1 ? (quotX & 1 ? resultX : resultX - unitX) : (quotX & 1 ? resultX - unitX : resultX)) * 0.5f;
-	const float xTranslate = std::floor((lastX - offsetX) / unitX) * unitX
-		+ offsetX
-		+ gridCellWidth * 0.5f + gridLineThickness * 0.5f;
+	/////Render translucent block
+	//int quotX; //Used for checking if len of x end regions combined is >= unitX
+	//const float unitX = gridCellWidth + gridLineThickness * 0.5f;
+	//const float resultX = remquof(winWidth - gridLineThickness * 0.5f, unitX, &quotX);
+	//const float offsetX = (gridCols & 1 ? (quotX & 1 ? resultX : resultX - unitX) : (quotX & 1 ? resultX - unitX : resultX)) * 0.5f;
+	//const float xTranslate = std::floor((lastX - offsetX) / unitX) * unitX
+	//	+ offsetX
+	//	+ gridCellWidth * 0.5f + gridLineThickness * 0.5f;
 
-	int quotY; //Used for checking if len of y end regions combined is >= unitY
-	const float unitY = gridCellHeight + gridLineThickness * 0.5f;
-	const float resultY = remquof(winHeight - gridLineThickness * 0.5f, unitY, &quotY);
-	const float offsetY = (gridRows & 1 ? (quotY & 1 ? resultY : resultY - unitY) : (quotY & 1 ? resultY - unitY : resultY)) * 0.5f;
-	const float yTranslate = std::floor((winHeight - lastY - offsetY) / unitY) * unitY
-		+ offsetY
-		+ gridCellHeight * 0.5f + gridLineThickness * 0.5f;
+	//int quotY; //Used for checking if len of y end regions combined is >= unitY
+	//const float unitY = gridCellHeight + gridLineThickness * 0.5f;
+	//const float resultY = remquof(winHeight - gridLineThickness * 0.5f, unitY, &quotY);
+	//const float offsetY = (gridRows & 1 ? (quotY & 1 ? resultY : resultY - unitY) : (quotY & 1 ? resultY - unitY : resultY)) * 0.5f;
+	//const float yTranslate = std::floor((winHeight - lastY - offsetY) / unitY) * unitY
+	//	+ offsetY
+	//	+ gridCellHeight * 0.5f + gridLineThickness * 0.5f;
 
-	if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
-		modelStack.PushModel({
-			modelStack.Translate(glm::vec3(
-				xTranslate,
-				yTranslate,
-				0.5f
-			)),
-			modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
-		});
-			forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.2f));
-			meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
-			meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
-		modelStack.PopModel();
-	}
+	//if(xTranslate >= xOffset && xTranslate <= xOffset + gridWidth && yTranslate >= yOffset && yTranslate <= yOffset + gridHeight){
+	//	modelStack.PushModel({
+	//		modelStack.Translate(glm::vec3(
+	//			xTranslate,
+	//			yTranslate,
+	//			0.5f
+	//		)),
+	//		modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
+	//	});
+	//		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.0f), 0.2f));
+	//		meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
+	//		meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
+	//	modelStack.PopModel();
+	//}
 
-	//grid.SetData(EntityType::Block, 0, 0);
-	grid.SetData(EntityType::Block, 1, 0);
-	//grid.SetData(EntityType::Block, 0, 1);
+	////grid.SetData(EntityType::Block, 0, 0);
+	//grid.SetData(EntityType::Block, 1, 0);
+	////grid.SetData(EntityType::Block, 0, 1);
 
-	///Render grid data
-	const std::vector<std::vector<EntityType>>& gridData = grid.GetData();
-	for(size_t i = (size_t)0; i < gridRows; ++i){
-		for(size_t j = (size_t)0; j < gridCols; ++j){
-			modelStack.PushModel({
-				modelStack.Translate(glm::vec3(
-					xOffset - gridLineThickness * 0.5f * 0.5f + gridLineThickness * 0.5f * (i + 1) + gridCellWidth * 0.5f * (i + 1),
-					yOffset - gridLineThickness * 0.5f * 0.5f + gridLineThickness * 0.5f * (i + 1) + gridCellHeight * 0.5f * (i + 1),
-					0.7f
-				)),
-				modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
-			});
-				forwardSP.Set4fv("customColour", glm::vec4(1.0f));
-				switch(gridData[i][j]){
-					case EntityType::Block:
-						meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
-						meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
-						break;
-				}
-			modelStack.PopModel();
-		}
-	}
+	/////Render grid data
+	//const std::vector<std::vector<EntityType>>& gridData = grid.GetData();
+	//for(size_t i = (size_t)0; i < gridRows; ++i){
+	//	for(size_t j = (size_t)0; j < gridCols; ++j){
+	//		modelStack.PushModel({
+	//			modelStack.Translate(glm::vec3(
+	//				xOffset - gridLineThickness * 0.5f * 0.5f + gridLineThickness * 0.5f * (i + 1) + gridCellWidth * 0.5f * (i + 1),
+	//				yOffset - gridLineThickness * 0.5f * 0.5f + gridLineThickness * 0.5f * (i + 1) + gridCellHeight * 0.5f * (i + 1),
+	//				0.7f
+	//			)),
+	//			modelStack.Scale(glm::vec3(gridCellWidth * 0.5f, gridCellHeight * 0.5f, 1.0f)),
+	//		});
+	//			forwardSP.Set4fv("customColour", glm::vec4(1.0f));
+	//			switch(gridData[i][j]){
+	//				case EntityType::Block:
+	//					meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
+	//					meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
+	//					break;
+	//			}
+	//		modelStack.PopModel();
+	//	}
+	//}
 
 	///BG
 	modelStack.PushModel({
 		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
-		modelStack.Scale(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 1.0f)),
+		modelStack.Scale(glm::vec3(winWidth, winHeight, 1.0f)),
 	});
 		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
 		meshes[(int)MeshType::BG]->SetModel(modelStack.GetTopModel());
@@ -328,39 +328,15 @@ void MyScene::ForwardRender(){
 
 	textRenderer.RenderText(forwardSP, {
 		(str)"FPS: " + std::to_string(FPS).substr(0, std::to_string((int)FPS).length() + 3),
-		0.0f,
-		0.0f,
-		1.0f,
-		30.0f,
-		50.0f,
-		glm::vec4(1.0f),
-		TextRenderer::TextAlignment::Left,
-	});
-
-	textRenderer.RenderText(forwardSP, {
-		(str)"AAA",
-		(float)winWidth * 0.5f,
-		0.0f,
-		1.0f,
-		30.0f,
-		50.0f,
-		glm::vec4(1.0f),
-		TextRenderer::TextAlignment::Center,
-		0.7f,
-		0,
-	});
-
-	textRenderer.RenderText(forwardSP, {
-		(str)"AAA",
 		(float)winWidth,
 		0.0f,
 		1.0f,
 		30.0f,
 		50.0f,
 		glm::vec4(1.0f),
+		//glm::vec4(0.5f, 0.3f, 0.7f, 1.0f),
 		TextRenderer::TextAlignment::Right,
 		0.7f,
-		0,
 	});
 
 	glBlendFunc(GL_ONE, GL_ZERO);
@@ -369,7 +345,7 @@ void MyScene::ForwardRender(){
 void MyScene::DefaultRender(const uint& screenTexRefID){
 	screenSP.Use();
 	screenSP.UseTex("screenTexSampler", screenTexRefID);
-	meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
+	meshes[(int)MeshType::Quad]->SetModel(glm::scale(glm::mat4(), glm::vec3(2.0f, 2.0f, 1.0f)));
 	meshes[(int)MeshType::Quad]->Render(screenSP, false);
 	screenSP.ResetTexUnits();
 }

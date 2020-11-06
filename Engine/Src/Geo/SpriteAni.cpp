@@ -87,10 +87,10 @@ void SpriteAni::Create(){
 		for(int j = 0; j < cols; ++j){
 			const float U = j * width;
 			const float V = 1.f - height - i * height;
-			temp.push_back({glm::vec3(-1.f, -1.f, 0.f), glm::vec2(U, V)});
-			temp.push_back({glm::vec3(1.f, -1.f, 0.f), glm::vec2(U + width, V)});
-			temp.push_back({glm::vec3(1.f, 1.f, 0.f), glm::vec2(U + width, V + height)});
-			temp.push_back({glm::vec3(-1.f, 1.f, 0.f), glm::vec2(U, V + height)});
+			temp.push_back({glm::vec3(-0.5f, -0.5f, 0.f), glm::vec2(U, V)});
+			temp.push_back({glm::vec3(0.5f, -0.5f, 0.f), glm::vec2(U + width, V)});
+			temp.push_back({glm::vec3(0.5f, 0.5f, 0.f), glm::vec2(U + width, V + height)});
+			temp.push_back({glm::vec3(-0.5f, 0.5f, 0.f), glm::vec2(U, V + height)});
 
 			for(short k = 0; k < 6; ++k){
 				indices->emplace_back(offset + myArr[k]);

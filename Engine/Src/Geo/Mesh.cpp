@@ -540,7 +540,7 @@ void Mesh::CreateLine(){
 
 void Mesh::CreateQuad(){
 	if(!vertices){
-		const glm::vec3 pos[4]{glm::vec3(-1.f, 1.f, 0.f), glm::vec3(-1.f, -1.f, 0.f), glm::vec3(1.f, -1.f, 0.f), glm::vec3(1.f, 1.f, 0.f)};
+		const glm::vec3 pos[4]{glm::vec3(-0.5, 0.5, 0.f), glm::vec3(-0.5, -0.5, 0.f), glm::vec3(0.5, -0.5, 0.f), glm::vec3(0.5, 0.5, 0.f)};
 		const glm::vec2 UVs[4]{glm::vec2(0.f, 1.f), glm::vec2(0.f, 0.f), glm::vec2(1.f, 0.f), glm::vec2(1.f, 1.f)};
 
 		///T and B lie on the same plane as normal map surface and align with tex axes U and V so calc them with vertices (to get edges of...) and texCoords (since in tangent space) of primitives
