@@ -64,11 +64,14 @@ bool InitAPI(GLFWwindow*& win){
         (void)puts("Failed to init GLAD\n");
         return false;
     }
+
     glfwSetFramebufferSizeCallback(win, &FramebufferSizeCallback);
     glfwSetCursorPosCallback(win, CursorPosCallback);
     glfwSetMouseButtonCallback(win, MouseButtonCallback);
     glfwSetScrollCallback(win, ScrollCallback);
     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+    glfwSwapInterval(0); //Disable VSync
 
     return true;
 }
