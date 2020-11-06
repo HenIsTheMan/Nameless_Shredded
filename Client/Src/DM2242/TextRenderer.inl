@@ -26,6 +26,7 @@ void TextRenderer::RenderText(ShaderProg& SP, const TextAttribs& attribs){
         glm::mat4 transform = glm::mat4();
         transform = glm::translate(transform, glm::vec3(attribs.x + attribs.charSpacing * i, attribs.y, attribs.z));
         transform = glm::scale(transform, glm::vec3(attribs.scaleFactor, attribs.scaleFactor, 1.0f));
+        transform = glm::translate(transform, glm::vec3(0.5f, 0.5f, 0.0f)); //Offset due to size of each quad
 		mesh->SetModel(transform);
 
 		mesh->RenderText(SP, (unsigned)attribs.text[i] * 6, true);

@@ -302,7 +302,7 @@ void MyScene::ForwardRender(){
 		0.0f,
 		0.0f,
 		1.0f,
-		40.0f,
+		30.0f,
 		50.0f,
 		TextRenderer::TextAlignment::Left,
 		glm::vec4(1.0f),
