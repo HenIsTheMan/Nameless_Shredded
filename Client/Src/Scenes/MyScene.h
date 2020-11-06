@@ -27,6 +27,8 @@ private:
 
 	TextRenderer textRenderer;
 
+	float FPS;
+
 	enum struct MeshType{
 		Quad,
 		QuadWithTex,

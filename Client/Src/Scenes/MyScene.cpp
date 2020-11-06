@@ -89,6 +89,8 @@ bool MyScene::Init(){
 }
 
 void MyScene::Update(float dt){
+	FPS = 1.0f / dt;
+
 	elapsedTime += dt;
 	if(winHeight){ //Avoid division by 0 when win is minimised
 		cam.SetDefaultAspectRatio(float(winWidth) / float(winHeight));
@@ -298,7 +300,7 @@ void MyScene::ForwardRender(){
 	forwardSP.Set1i("noNormals", 0);
 
 	textRenderer.RenderText(forwardSP, {
-		(str)"AAA",
+		(str)"FPS: " + std::to_string(FPS).substr(0, std::to_string((int)FPS).length() + 3),
 		0.0f,
 		0.0f,
 		1.0f,
