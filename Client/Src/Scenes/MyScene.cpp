@@ -298,14 +298,39 @@ void MyScene::ForwardRender(){
 	forwardSP.Set1i("noNormals", 0);
 
 	textRenderer.RenderText(forwardSP, {
-		(str)"Hello World!",
+		(str)"AAA",
 		0.0f,
 		0.0f,
 		1.0f,
 		30.0f,
 		50.0f,
-		TextRenderer::TextAlignment::Left,
 		glm::vec4(1.0f),
+		TextRenderer::TextAlignment::Left,
+	});
+
+	textRenderer.RenderText(forwardSP, {
+		(str)"AAA",
+		(float)winWidth * 0.5f,
+		0.0f,
+		1.0f,
+		30.0f,
+		50.0f,
+		glm::vec4(1.0f),
+		TextRenderer::TextAlignment::Center,
+		0.7f,
+		0,
+	});
+
+	textRenderer.RenderText(forwardSP, {
+		(str)"AAA",
+		(float)winWidth,
+		0.0f,
+		1.0f,
+		30.0f,
+		50.0f,
+		glm::vec4(1.0f),
+		TextRenderer::TextAlignment::Right,
+		0.7f,
 		0,
 	});
 
