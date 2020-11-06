@@ -24,13 +24,11 @@ MyScene::MyScene():
 			{"Imgs/BoxSpec.png", Mesh::TexType::Spec, 0},
 			{"Imgs/BoxEmission.png", Mesh::TexType::Emission, 0},
 		}),
-		new SpriteAni(18, 4),
+		new SpriteAni(3, 5),
+		new SpriteAni(1, 5),
 	},
 	forwardSP{"Shaders/Forward.vs", "Shaders/Forward.fs"},
 	screenSP{"Shaders/Quad.vs", "Shaders/Screen.fs"},
-	ptLights(),
-	directionalLights(),
-	spotlights(),
 	cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f), 0.f, 150.f),
 	view(glm::mat4(1.f)),
 	projection(glm::mat4(1.f)),
@@ -46,33 +44,13 @@ MyScene::MyScene():
 	grid(Grid<float>(0.0f, 0.0f, 0.0f, 0, 0)),
 	textRenderer(),
 	mouseRow(0.0f),
-	mouseCol(0.0f)
+	mouseCol(0.0f),
+	isDay(false),
+	dayNightBT(0.0f)
 {
 }
 
 MyScene::~MyScene(){
-	const size_t& pSize = ptLights.size();
-	const size_t& dSize = directionalLights.size();
-	const size_t& sSize = spotlights.size();
-	for(size_t i = 0; i < pSize; ++i){
-		if(ptLights[i]){
-			delete ptLights[i];
-			ptLights[i] = nullptr;
-		}
-	}
-	for(size_t i = 0; i < dSize; ++i){
-		if(directionalLights[i]){
-			delete directionalLights[i];
-			directionalLights[i] = nullptr;
-		}
-	}
-	for(size_t i = 0; i < sSize; ++i){
-		if(spotlights[i]){
-			delete spotlights[i];
-			spotlights[i] = nullptr;
-		}
-	}
-	
 	for(int i = 0; i < (int)MeshType::Amt; ++i){
 		if(meshes[i]){
 			delete meshes[i];
@@ -84,11 +62,13 @@ MyScene::~MyScene(){
 bool MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
-	meshes[(int)MeshType::BG]->AddTexMap({"Imgs/BG.png", Mesh::TexType::Diffuse, 0});
-	static_cast<SpriteAni*>(meshes[(int)MeshType::BG])->AddAni("BG", 0, 72);
-	static_cast<SpriteAni*>(meshes[(int)MeshType::BG])->Play("BG", -1, 5.f);
+	meshes[(int)MeshType::DayBG]->AddTexMap({"Imgs/DayBG.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->AddAni("DayBG", 0, 12);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->Play("DayBG", -1, 1.f);
 
-	spotlights.emplace_back(CreateLight(LightType::Spot));
+	meshes[(int)MeshType::NightBG]->AddTexMap({"Imgs/NightBG.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->AddAni("NightBG", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Play("NightBG", -1, .33f);
 
 	return true;
 }
@@ -107,15 +87,8 @@ void MyScene::Update(float dt){
 	const glm::vec3& camWorldSpacePos = cam.GetPos();
 	const glm::vec3& camFront = cam.CalcFront();
 
-	spotlights[0]->ambient = glm::vec3(.05f);
-	spotlights[0]->diffuse = glm::vec3(.8f);
-	spotlights[0]->spec = glm::vec3(1.f);
-	static_cast<Spotlight*>(spotlights[0])->pos = camWorldSpacePos;
-	static_cast<Spotlight*>(spotlights[0])->dir = camFront;
-	static_cast<Spotlight*>(spotlights[0])->cosInnerCutoff = cosf(glm::radians(12.5f));
-	static_cast<Spotlight*>(spotlights[0])->cosOuterCutoff = cosf(glm::radians(17.5f));
-
-	static_cast<SpriteAni*>(meshes[(int)MeshType::BG])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Update(dt);
 
 	static float polyModeBT = 0.f;
 	if(Key(VK_F2) && polyModeBT <= elapsedTime){
@@ -200,6 +173,11 @@ void MyScene::Update(float dt){
 	grid.SetLineThickness(gridLineThickness);
 	grid.SetRows(gridRows);
 	grid.SetCols(gridCols);
+
+	if(dayNightBT <= elapsedTime){
+		isDay = !isDay;
+		dayNightBT = elapsedTime + 7.0f;
+	}
 
 	const float amtOfHorizLines = gridRows + 1.0f;
 	const float amtOfVertLines = gridCols + 1.0f;
@@ -381,7 +359,12 @@ void MyScene::RenderBG(){
 		modelStack.Scale(glm::vec3(winWidth, winHeight, 1.0f)),
 	});
 		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
-		meshes[(int)MeshType::BG]->SetModel(modelStack.GetTopModel());
-		meshes[(int)MeshType::BG]->Render(forwardSP);
+		if(isDay){
+			meshes[(int)MeshType::DayBG]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::DayBG]->Render(forwardSP);
+		} else{
+			meshes[(int)MeshType::NightBG]->SetModel(modelStack.GetTopModel());
+			meshes[(int)MeshType::NightBG]->Render(forwardSP);
+		}
 	modelStack.PopModel();
 }
