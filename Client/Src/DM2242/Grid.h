@@ -5,7 +5,7 @@
 #include "EntityType.hpp"
 
 template <class T>
-class Grid final{
+class Grid final{ //Row-major order
 public:
 	Grid<T>();
 	Grid<T>(T cellWidth, T cellHeight, T lineThickness, int rows, int cols);
