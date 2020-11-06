@@ -10,6 +10,8 @@ extern int winWidth;
 extern int winHeight;
 extern float lastX;
 extern float lastY;
+extern bool LMB;
+extern bool RMB;
 
 glm::vec3 Light::globalAmbient = glm::vec3(.2f);
 
@@ -42,7 +44,9 @@ MyScene::MyScene():
 	gridRows(5),
 	gridCols(5),
 	grid(Grid<float>(0.0f, 0.0f, 0.0f, 0, 0)),
-	textRenderer()
+	textRenderer(),
+	mouseRow(0.0f),
+	mouseCol(0.0f)
 {
 }
 
@@ -196,6 +200,28 @@ void MyScene::Update(float dt){
 	grid.SetLineThickness(gridLineThickness);
 	grid.SetRows(gridRows);
 	grid.SetCols(gridCols);
+
+	const float amtOfHorizLines = gridRows + 1.0f;
+	const float amtOfVertLines = gridCols + 1.0f;
+	const float gridWidth = gridCols * gridCellWidth + amtOfVertLines * gridLineThickness;
+	const float gridHeight = gridRows * gridCellHeight + amtOfHorizLines * gridLineThickness;
+
+	const float xOffset = ((float)winWidth - gridWidth) * 0.5f;
+	const float yOffset = ((float)winHeight - gridHeight) * 0.5f;
+	const float unitX = gridCellWidth + gridLineThickness;
+	const float unitY = gridCellHeight + gridLineThickness;
+
+	mouseRow = std::floor((winHeight - lastY - yOffset - gridLineThickness * 0.5f) / unitY);
+	mouseCol = std::floor((lastX - xOffset - gridLineThickness * 0.5f) / unitX);
+
+	if(lastX > xOffset + gridLineThickness * 0.5f && lastX < xOffset + gridWidth - gridLineThickness * 0.5f
+		&& lastY > yOffset + gridLineThickness * 0.5f && lastY < yOffset + gridHeight - gridLineThickness * 0.5f){
+		if(LMB){
+			grid.SetData(EntityType::Block, (ptrdiff_t)mouseRow, (ptrdiff_t)mouseCol);
+		} else if(RMB){
+			grid.SetData(EntityType::Null, (ptrdiff_t)mouseRow, (ptrdiff_t)mouseCol);
+		}
+	}
 }
 
 void MyScene::ForwardRender(){
@@ -328,11 +354,11 @@ void MyScene::RenderTranslucentBlock(float gridWidth, float gridHeight){
 		&& lastY > yOffset + gridLineThickness * 0.5f && lastY < yOffset + gridHeight - gridLineThickness * 0.5f){
 		const float unitX = gridCellWidth + gridLineThickness;
 		const float unitY = gridCellHeight + gridLineThickness;
-		const float xTranslate = std::floor((lastX - xOffset - gridLineThickness * 0.5f) / unitX) * unitX
+		const float xTranslate = mouseCol * unitX
 			+ xOffset
 			+ gridCellWidth * 0.5f
 			+ gridLineThickness;
-		const float yTranslate = std::floor((winHeight - lastY - yOffset - gridLineThickness * 0.5f) / unitY) * unitY
+		const float yTranslate = mouseRow * unitY
 			+ yOffset
 			+ gridCellHeight * 0.5f
 			+ gridLineThickness;

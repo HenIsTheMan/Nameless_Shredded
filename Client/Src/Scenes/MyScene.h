@@ -49,6 +49,8 @@ private:
 	int gridCols;
 	Grid<float> grid;
 	TextRenderer textRenderer;
+	float mouseRow;
+	float mouseCol;
 
 	void RenderGrid(float amtOfHorizLines, float amtOfVertLines, float gridWidth, float gridHeight);
 	void RenderGridBG(float gridWidth, float gridHeight);
