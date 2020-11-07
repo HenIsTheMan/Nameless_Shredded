@@ -8,6 +8,8 @@
 
 #include "../DM2242/Grid.h"
 #include "../DM2242/TextRenderer.h"
+#include "../DM2242/Entity/Entity.h"
+#include "../DM2242/ObjPool.h"
 
 class MyScene final{
 public:
@@ -55,6 +57,7 @@ private:
 
 	bool isDay;
 	float dayNightBT;
+	ObjPool<Entity>* objPool;
 
 	std::function<void(const str& aniName)> SkeleMove;
 	std::function<void(const str& aniName)> SkeleThrust;

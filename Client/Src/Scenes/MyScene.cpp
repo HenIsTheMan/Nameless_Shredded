@@ -51,6 +51,7 @@ MyScene::MyScene():
 	mouseCol(0.0f),
 	isDay(false),
 	dayNightBT(0.0f),
+	objPool(new ObjPool<Entity>()),
 	SkeleMove(nullptr),
 	SkeleThrust(nullptr),
 	ReptileMove(nullptr),
@@ -69,10 +70,17 @@ MyScene::~MyScene(){
 			meshes[i] = nullptr;
 		}
 	}
+
+	if(objPool){
+		delete objPool;
+		objPool = nullptr;
+	}
 }
 
 void MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
+
+	objPool->CreateObjs(100);
 
 	meshes[(int)MeshType::DayBG]->AddTexMap({"Imgs/DayBG.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->AddAni("DayBG", 0, 12);
@@ -389,7 +397,7 @@ void MyScene::RenderGridBG(float gridWidth, float gridHeight){
 		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
 		modelStack.Scale(glm::vec3(gridWidth, gridHeight, 1.0f)),
 	});
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.0f), 1.f));
+		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.2f), 1.f));
 		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
 		meshes[(int)MeshType::Quad]->Render(forwardSP);
 	modelStack.PopModel();
@@ -432,7 +440,7 @@ void MyScene::RenderBG(){
 		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
 		modelStack.Scale(glm::vec3(winWidth, winHeight, 1.0f)),
 	});
-		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(1.f), 1.f));
+		forwardSP.Set4fv("customColour", glm::vec4(1.0f));
 		if(isDay){
 			meshes[(int)MeshType::DayBG]->SetModel(modelStack.GetTopModel());
 			meshes[(int)MeshType::DayBG]->Render(forwardSP);
