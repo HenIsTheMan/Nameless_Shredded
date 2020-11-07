@@ -30,7 +30,7 @@ public:
 	SpriteAni(const int& rows, const int& cols);
 	~SpriteAni();
 
-	void Play(const str& name, const int& repeat, const float& time);
+	void Play(const str& name, int repeat, float time);
 	void Pause();
 	void Resume();
 	void Reset();

@@ -56,6 +56,15 @@ private:
 	bool isDay;
 	float dayNightBT;
 
+	std::function<void(const str& aniName)> SkeleMove;
+	std::function<void(const str& aniName)> SkeleThrust;
+	std::function<void(const str& aniName)> ReptileMove;
+	std::function<void(const str& aniName)> ReptileShoot;
+	std::function<void(const str& aniName)> BoyMove;
+	std::function<void(const str& aniName)> BoySlash;
+	std::function<void(const str& aniName)> OrcMove;
+	std::function<void(const str& aniName)> OrcSmack;
+
 	void RenderGrid(float amtOfHorizLines, float amtOfVertLines, float gridWidth, float gridHeight);
 	void RenderGridBG(float gridWidth, float gridHeight);
 	void RenderGridData(float gridWidth, float gridHeight);

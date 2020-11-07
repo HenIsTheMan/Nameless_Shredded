@@ -27,7 +27,7 @@ SpriteAni::~SpriteAni(){
 	}
 }
 
-void SpriteAni::Play(const str& name, const int& repeat, const float& time){
+void SpriteAni::Play(const str& name, int repeat, float time){
 	if(allAnis[name]){
 		currAni = name;
 		allAnis[name]->repeatCount = repeat;

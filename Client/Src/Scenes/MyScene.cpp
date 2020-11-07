@@ -50,7 +50,15 @@ MyScene::MyScene():
 	mouseRow(0.0f),
 	mouseCol(0.0f),
 	isDay(false),
-	dayNightBT(0.0f)
+	dayNightBT(0.0f),
+	SkeleMove(nullptr),
+	SkeleThrust(nullptr),
+	ReptileMove(nullptr),
+	ReptileShoot(nullptr),
+	BoyMove(nullptr),
+	BoySlash(nullptr),
+	OrcMove(nullptr),
+	OrcSmack(nullptr)
 {
 }
 
@@ -68,11 +76,11 @@ void MyScene::Init(){
 
 	meshes[(int)MeshType::DayBG]->AddTexMap({"Imgs/DayBG.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->AddAni("DayBG", 0, 12);
-	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->Play("DayBG", -1, 1.f);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->Play("DayBG", -1, 1.0f);
 
 	meshes[(int)MeshType::NightBG]->AddTexMap({"Imgs/NightBG.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->AddAni("NightBG", 0, 4);
-	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Play("NightBG", -1, .33f);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Play("NightBG", -1, 0.33f);
 
 	meshes[(int)MeshType::Skele]->AddTexMap({"Imgs/Skele.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleStaticUp", 0, 4);
@@ -89,6 +97,12 @@ void MyScene::Init(){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleThrustRight", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleHibernate", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleFacePlant", 0, 4);
+	SkeleMove = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->Play(aniName, -1, 2.0f);
+	};
+	SkeleThrust = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->Play(aniName, -1, 1.0f);
+	};
 
 	meshes[(int)MeshType::Reptile]->AddTexMap({"Imgs/Reptile.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileStaticUp", 0, 4);
@@ -105,6 +119,12 @@ void MyScene::Init(){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileShootRight", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileProcreate", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileFacePlant", 0, 4);
+	ReptileMove = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->Play(aniName, -1, 2.0f);
+	};
+	ReptileShoot = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->Play(aniName, -1, 1.0f);
+	};
 
 	meshes[(int)MeshType::Boy]->AddTexMap({"Imgs/Boy.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyStaticUp", 0, 4);
@@ -121,6 +141,12 @@ void MyScene::Init(){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoySlashRight", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyHeal", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyFacePlant", 0, 4);
+	BoyMove = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->Play(aniName, -1, 2.0f);
+	};
+	BoySlash = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->Play(aniName, -1, 1.0f);
+	};
 
 	meshes[(int)MeshType::Orc]->AddTexMap({"Imgs/Orc.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcStaticUp", 0, 4);
@@ -137,6 +163,12 @@ void MyScene::Init(){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcSmackRight", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcShield", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcFacePlant", 0, 4);
+	OrcMove = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->Play(aniName, -1, 2.0f);
+	};
+	OrcSmack = [this](const str& aniName)->void{
+		static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->Play(aniName, -1, 1.0f);
+	};
 }
 
 void MyScene::Update(float dt){
