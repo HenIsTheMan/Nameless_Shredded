@@ -1,14 +1,6 @@
 #pragma once
 
-enum struct EntityType: int{
-	Null,
-	Block,
-	Skele,
-	Reptile,
-	Boy,
-	Orc,
-	Amt
-};
+#include "EntityType.hpp"
 
 struct EntityAttribs final{
 	EntityType type = EntityType::Null;
