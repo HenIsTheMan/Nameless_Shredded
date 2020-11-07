@@ -310,6 +310,7 @@ void MyScene::Update(float dt){
 		&& lastY > yOffset + gridLineThickness * 0.5f && lastY < yOffset + gridHeight - gridLineThickness * 0.5f){
 		if(LMB){
 			Entity* const& entity = objPool->RetrieveInactiveObj();
+			entity->RetrieveType() = EntityType::Block;
 			entity->RetrievePos() = glm::vec3(xTranslate, yTranslate, 0.0f);
 		} else if(RMB){
 			//grid.SetData(EntityType::Null, (ptrdiff_t)mouseRow, (ptrdiff_t)mouseCol);
@@ -335,6 +336,7 @@ void MyScene::ForwardRender(){
 
 	RenderGrid();
 	RenderGridBG();
+	RenderEntities();
 	RenderTranslucentBlock();
 	RenderBG();
 
