@@ -68,8 +68,8 @@ private:
 	std::function<void(const str& aniName)> OrcMove;
 	std::function<void(const str& aniName)> OrcSmack;
 
-	void RenderGrid(float amtOfHorizLines, float amtOfVertLines, float gridWidth, float gridHeight);
-	void RenderGridBG(float gridWidth, float gridHeight);
-	void RenderTranslucentBlock(float gridWidth, float gridHeight);
+	void RenderGrid();
+	void RenderGridBG();
+	void RenderTranslucentBlock();
 	void RenderBG();
 };

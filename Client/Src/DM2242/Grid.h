@@ -9,6 +9,11 @@ public:
 	Grid<T>(T cellWidth, T cellHeight, T lineThickness, int rows, int cols);
 	~Grid<T>() = default;
 
+	int CalcAmtOfHorizLines() const;
+	int CalcAmtOfVertLines() const;
+	T CalcWidth() const;
+	T CalcHeight() const;
+
 	///Getters
 	T GetCellWidth() const;
 	T GetCellHeight() const;

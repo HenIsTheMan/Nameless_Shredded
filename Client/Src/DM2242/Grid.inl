@@ -21,6 +21,26 @@ Grid<T>::Grid(T cellWidth, T cellHeight, T lineThickness, int rows, int cols):
 }
 
 template <class T>
+int Grid<T>::CalcAmtOfHorizLines() const{
+	return im_Rows + 1;
+}
+
+template <class T>
+int Grid<T>::CalcAmtOfVertLines() const{
+	return im_Cols + 1;
+}
+
+template <class T>
+T Grid<T>::CalcWidth() const{
+	return im_Cols * im_CellWidth + (T)CalcAmtOfVertLines() * im_LineThickness;
+}
+
+template <class T>
+T Grid<T>::CalcHeight() const{
+	return im_Rows * im_CellHeight + (T)CalcAmtOfHorizLines() * im_LineThickness;
+}
+
+template <class T>
 T Grid<T>::GetCellWidth() const{
 	return im_CellWidth;
 }

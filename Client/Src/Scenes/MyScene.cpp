@@ -289,13 +289,8 @@ void MyScene::Update(float dt){
 		dayNightBT = elapsedTime + 7.0f;
 	}
 
-	const float amtOfHorizLines = gridRows + 1.0f;
-	const float amtOfVertLines = gridCols + 1.0f;
-	const float gridWidth = gridCols * gridCellWidth + amtOfVertLines * gridLineThickness;
-	const float gridHeight = gridRows * gridCellHeight + amtOfHorizLines * gridLineThickness;
-
-	const float xOffset = ((float)winWidth - gridWidth) * 0.5f;
-	const float yOffset = ((float)winHeight - gridHeight) * 0.5f;
+	const float xOffset = ((float)winWidth - grid.CalcWidth()) * 0.5f;
+	const float yOffset = ((float)winHeight - grid.CalcHeight()) * 0.5f;
 	const float unitX = gridCellWidth + gridLineThickness;
 	const float unitY = gridCellHeight + gridLineThickness;
 
@@ -328,14 +323,9 @@ void MyScene::ForwardRender(){
 	forwardSP.Set1i("noNormals", 1);
 	forwardSP.Set1i("useCustomColour", 1);
 
-	const float amtOfHorizLines = gridRows + 1.0f;
-	const float amtOfVertLines = gridCols + 1.0f;
-	const float gridWidth = gridCols * gridCellWidth + amtOfVertLines * gridLineThickness;
-	const float gridHeight = gridRows * gridCellHeight + amtOfHorizLines * gridLineThickness;
-
-	RenderGrid(amtOfHorizLines, amtOfVertLines, gridWidth, gridHeight);
-	RenderGridBG(gridWidth, gridHeight);
-	RenderTranslucentBlock(gridWidth, gridHeight);
+	RenderGrid();
+	RenderGridBG();
+	RenderTranslucentBlock();
 	RenderBG();
 
 	forwardSP.Set1i("useCustomColour", 0);
@@ -365,10 +355,14 @@ void MyScene::DefaultRender(const uint& screenTexRefID){
 	screenSP.ResetTexUnits();
 }
 
-void MyScene::RenderGrid(float amtOfHorizLines, float amtOfVertLines, float gridWidth, float gridHeight){
+void MyScene::RenderGrid(){
+	const float gridWidth = grid.CalcWidth();
+	const float gridHeight = grid.CalcHeight();
+
 	const float xOffset = ((float)winWidth - gridWidth) * 0.5f + gridLineThickness * 0.5f;
 	const float yOffset = ((float)winHeight - gridHeight) * 0.5f + gridLineThickness * 0.5f;
 
+	const int amtOfVertLines = grid.CalcAmtOfVertLines();
 	for(int i = 0; i < amtOfVertLines; ++i){
 		modelStack.PushModel({
 			modelStack.Translate(glm::vec3(xOffset + (gridCellWidth + gridLineThickness) * (float)i, (float)winHeight * 0.5f, 0.0f)),
@@ -380,6 +374,7 @@ void MyScene::RenderGrid(float amtOfHorizLines, float amtOfVertLines, float grid
 		modelStack.PopModel();
 	}
 
+	const int amtOfHorizLines = grid.CalcAmtOfHorizLines();
 	for(int i = 0; i < amtOfHorizLines; ++i){
 		modelStack.PushModel({
 			modelStack.Translate(glm::vec3((float)winWidth * 0.5f, yOffset + (gridCellHeight + gridLineThickness) * (float)i, 0.0f)),
@@ -392,10 +387,10 @@ void MyScene::RenderGrid(float amtOfHorizLines, float amtOfVertLines, float grid
 	}
 }
 
-void MyScene::RenderGridBG(float gridWidth, float gridHeight){
+void MyScene::RenderGridBG(){
 	modelStack.PushModel({
 		modelStack.Translate(glm::vec3(winWidth * 0.5f, winHeight * 0.5f, 0.0f)),
-		modelStack.Scale(glm::vec3(gridWidth, gridHeight, 1.0f)),
+		modelStack.Scale(glm::vec3(grid.CalcWidth(), grid.CalcHeight(), 1.0f)),
 	});
 		forwardSP.Set4fv("customColour", glm::vec4(glm::vec3(0.2f), 1.f));
 		meshes[(int)MeshType::Quad]->SetModel(modelStack.GetTopModel());
@@ -403,7 +398,10 @@ void MyScene::RenderGridBG(float gridWidth, float gridHeight){
 	modelStack.PopModel();
 }
 
-void MyScene::RenderTranslucentBlock(float gridWidth, float gridHeight){
+void MyScene::RenderTranslucentBlock(){
+	const float gridWidth = grid.CalcWidth();
+	const float gridHeight = grid.CalcHeight();
+
 	const float xOffset = ((float)winWidth - gridWidth) * 0.5f;
 	const float yOffset = ((float)winHeight - gridHeight) * 0.5f;
 
