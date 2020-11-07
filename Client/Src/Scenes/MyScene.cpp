@@ -47,8 +47,6 @@ MyScene::MyScene():
 	gridCols(5),
 	grid(Grid<float>(0.0f, 0.0f, 0.0f, 0, 0)),
 	textRenderer(),
-	mouseRow(0.0f),
-	mouseCol(0.0f),
 	isDay(false),
 	dayNightBT(0.0f),
 	objPool(new ObjPool<Entity>()),
@@ -80,7 +78,7 @@ MyScene::~MyScene(){
 void MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
-	objPool->CreateObjs(100);
+	objPool->CreateObjs(10000);
 
 	meshes[(int)MeshType::DayBG]->AddTexMap({"Imgs/DayBG.png", Mesh::TexType::Diffuse, 0});
 	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->AddAni("DayBG", 0, 12);
@@ -289,22 +287,34 @@ void MyScene::Update(float dt){
 		dayNightBT = elapsedTime + 7.0f;
 	}
 
-	const float xOffset = ((float)winWidth - grid.CalcWidth()) * 0.5f;
-	const float yOffset = ((float)winHeight - grid.CalcHeight()) * 0.5f;
+	const float gridWidth = grid.CalcWidth();
+	const float gridHeight = grid.CalcHeight();
+
+	const float xOffset = ((float)winWidth - gridWidth) * 0.5f;
+	const float yOffset = ((float)winHeight - gridHeight) * 0.5f;
 	const float unitX = gridCellWidth + gridLineThickness;
 	const float unitY = gridCellHeight + gridLineThickness;
 
-	mouseRow = std::floor((winHeight - lastY - yOffset - gridLineThickness * 0.5f) / unitY);
-	mouseCol = std::floor((lastX - xOffset - gridLineThickness * 0.5f) / unitX);
+	const float mouseRow = std::floor((winHeight - lastY - yOffset - gridLineThickness * 0.5f) / unitY);
+	const float mouseCol = std::floor((lastX - xOffset - gridLineThickness * 0.5f) / unitX);
+	const float xTranslate = mouseCol * unitX
+		+ xOffset
+		+ gridCellWidth * 0.5f
+		+ gridLineThickness;
+	const float yTranslate = mouseRow * unitY
+		+ yOffset
+		+ gridCellHeight * 0.5f
+		+ gridLineThickness;
 
-	//if(lastX > xOffset + gridLineThickness * 0.5f && lastX < xOffset + gridWidth - gridLineThickness * 0.5f
-	//	&& lastY > yOffset + gridLineThickness * 0.5f && lastY < yOffset + gridHeight - gridLineThickness * 0.5f){
-	//	if(LMB){
-	//		grid.SetData(EntityType::Block, (ptrdiff_t)mouseRow, (ptrdiff_t)mouseCol);
-	//	} else if(RMB){
-	//		grid.SetData(EntityType::Null, (ptrdiff_t)mouseRow, (ptrdiff_t)mouseCol);
-	//	}
-	//}
+	if(lastX > xOffset + gridLineThickness * 0.5f && lastX < xOffset + gridWidth - gridLineThickness * 0.5f
+		&& lastY > yOffset + gridLineThickness * 0.5f && lastY < yOffset + gridHeight - gridLineThickness * 0.5f){
+		if(LMB){
+			Entity* const& entity = objPool->RetrieveInactiveObj();
+			entity->RetrievePos() = glm::vec3(xTranslate, yTranslate, 0.0f);
+		} else if(RMB){
+			//grid.SetData(EntityType::Null, (ptrdiff_t)mouseRow, (ptrdiff_t)mouseCol);
+		}
+	}
 }
 
 void MyScene::ForwardRender(){
@@ -398,6 +408,30 @@ void MyScene::RenderGridBG(){
 	modelStack.PopModel();
 }
 
+void MyScene::RenderEntities(){
+	const std::vector<std::pair<bool, Entity*>>& entityPool = objPool->GetObjPool();
+	const size_t entityPoolSize = entityPool.size();
+	
+	for(size_t i = 0; i < entityPoolSize; ++i){
+		if(entityPool[i].first){
+			const Entity* const& entity = entityPool[i].second;
+			const glm::vec3& entityPos = entity->GetPos();
+			modelStack.PushModel({
+				modelStack.Translate(glm::vec3(
+					entityPos.x,
+					entityPos.y,
+					0.1f
+				)),
+				modelStack.Scale(glm::vec3(gridCellWidth, gridCellHeight, 1.0f)),
+			});
+				forwardSP.Set4fv("customColour", glm::vec4(1.0f));
+				meshes[(int)MeshType::QuadWithTex]->SetModel(modelStack.GetTopModel());
+				meshes[(int)MeshType::QuadWithTex]->Render(forwardSP);
+			modelStack.PopModel();
+		}
+	}
+}
+
 void MyScene::RenderTranslucentBlock(){
 	const float gridWidth = grid.CalcWidth();
 	const float gridHeight = grid.CalcHeight();
@@ -409,6 +443,9 @@ void MyScene::RenderTranslucentBlock(){
 		&& lastY > yOffset + gridLineThickness * 0.5f && lastY < yOffset + gridHeight - gridLineThickness * 0.5f){
 		const float unitX = gridCellWidth + gridLineThickness;
 		const float unitY = gridCellHeight + gridLineThickness;
+
+		const float mouseRow = std::floor((winHeight - lastY - yOffset - gridLineThickness * 0.5f) / unitY);
+		const float mouseCol = std::floor((lastX - xOffset - gridLineThickness * 0.5f) / unitX);
 		const float xTranslate = mouseCol * unitX
 			+ xOffset
 			+ gridCellWidth * 0.5f

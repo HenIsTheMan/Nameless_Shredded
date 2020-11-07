@@ -52,8 +52,6 @@ private:
 	int gridCols;
 	Grid<float> grid;
 	TextRenderer textRenderer;
-	float mouseRow;
-	float mouseCol;
 
 	bool isDay;
 	float dayNightBT;
@@ -70,6 +68,7 @@ private:
 
 	void RenderGrid();
 	void RenderGridBG();
+	void RenderEntities();
 	void RenderTranslucentBlock();
 	void RenderBG();
 };

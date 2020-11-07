@@ -8,8 +8,8 @@ public:
 	ObjPool<T>();
 	~ObjPool<T>();
 
-	std::vector<std::pair<bool, T*>>& RetrieveObjPool();
-	T*& RetrieveInactiveObj();
+	const std::vector<std::pair<bool, T*>>& GetObjPool();
+	T* const& RetrieveInactiveObj();
 	void CreateObjs(int amt);
 private:
 	std::vector<std::pair<bool, T*>> im_ObjPool;

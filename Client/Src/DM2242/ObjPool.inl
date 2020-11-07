@@ -17,20 +17,21 @@ ObjPool<T>::~ObjPool(){
 }
 
 template <class T>
-std::vector<std::pair<bool, T*>>& ObjPool<T>::RetrieveObjPool(){
+const std::vector<std::pair<bool, T*>>& ObjPool<T>::GetObjPool(){
 	return im_ObjPool;
 }
 
 template <class T>
-T*& ObjPool<T>::RetrieveInactiveObj(){
+T* const& ObjPool<T>::RetrieveInactiveObj(){
 	const size_t poolSize = im_ObjPool.size();
 	for(size_t i = 0; i < poolSize; ++i){
 		if(!im_ObjPool[i].first){
+			im_ObjPool[i].first = true;
 			return im_ObjPool[i].second;
 		}
 	}
 
-	im_ObjPool.emplace_back({false, new T()});
+	im_ObjPool.push_back({false, new T()});
 	return im_ObjPool.back().second;
 }
 

@@ -7,6 +7,11 @@ public:
 	Entity();
 	Entity(const EntityAttribs& attribs);
 	~Entity() = default;
+
+	glm::vec3& RetrievePos();
+
+	///Getter
+	const glm::vec3& GetPos() const;
 private:
-	EntityAttribs attribs;
+	EntityAttribs im_Attribs;
 };

@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Core.h"
+
 #include "EntityType.hpp"
 
 struct EntityAttribs final{
-	EntityType type = EntityType::Null;
+	EntityType im_Type = EntityType::Null;
+	glm::vec3 im_Pos = glm::vec3();
 };
