@@ -67,7 +67,6 @@ private:
 
 	void RenderGrid(float amtOfHorizLines, float amtOfVertLines, float gridWidth, float gridHeight);
 	void RenderGridBG(float gridWidth, float gridHeight);
-	void RenderGridData(float gridWidth, float gridHeight);
 	void RenderTranslucentBlock(float gridWidth, float gridHeight);
 	void RenderBG();
 };

@@ -197,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Client.cpp" />
+    <ClCompile Include="Src\DM2242\Entity\Entity.cpp" />
     <ClCompile Include="Src\Scenes\MyScene.cpp" />
     <ClCompile Include="Src\Scenes\YesScene.cpp" />
   </ItemGroup>
@@ -209,7 +210,7 @@
     <None Include="Src\DM2242\TextRenderer.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\DM2242\EntityType.hpp" />
+    <ClInclude Include="Src\DM2242\Entity\Entity.h" />
     <ClInclude Include="Src\DM2242\Grid.h" />
     <ClInclude Include="Src\DM2242\TextRenderer.h" />
     <ClInclude Include="Src\Scenes\MyScene.h" />
