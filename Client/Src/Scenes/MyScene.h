@@ -13,16 +13,20 @@ class MyScene final{
 public:
 	MyScene();
 	~MyScene();
-	bool Init();
+	void Init();
 	void Update(float dt);
 	void ForwardRender();
 	void DefaultRender(const uint& screenTexRefID);
 private:
-	enum struct MeshType{
+	enum struct MeshType: int{
 		Quad,
 		QuadWithTex,
 		DayBG,
 		NightBG,
+		Skele,
+		Reptile,
+		Boy,
+		Orc,
 		Amt
 	};
 	Mesh* meshes[(int)MeshType::Amt];

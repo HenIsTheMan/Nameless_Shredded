@@ -26,6 +26,10 @@ MyScene::MyScene():
 		}),
 		new SpriteAni(3, 5),
 		new SpriteAni(1, 5),
+		new SpriteAni(21, 13),
+		new SpriteAni(21, 13),
+		new SpriteAni(21, 13),
+		new SpriteAni(21, 13),
 	},
 	forwardSP{"Shaders/Forward.vs", "Shaders/Forward.fs"},
 	screenSP{"Shaders/Quad.vs", "Shaders/Screen.fs"},
@@ -59,7 +63,7 @@ MyScene::~MyScene(){
 	}
 }
 
-bool MyScene::Init(){
+void MyScene::Init(){
 	glGetIntegerv(GL_POLYGON_MODE, &polyMode);
 
 	meshes[(int)MeshType::DayBG]->AddTexMap({"Imgs/DayBG.png", Mesh::TexType::Diffuse, 0});
@@ -70,7 +74,69 @@ bool MyScene::Init(){
 	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->AddAni("NightBG", 0, 4);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Play("NightBG", -1, .33f);
 
-	return true;
+	meshes[(int)MeshType::Skele]->AddTexMap({"Imgs/Skele.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleStaticUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleStaticDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleStaticLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleStaticRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleMoveUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleMoveDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleMoveLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleMoveRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleThrustUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleThrustDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleThrustLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleThrustRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleHibernate", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->AddAni("SkeleFacePlant", 0, 4);
+
+	meshes[(int)MeshType::Reptile]->AddTexMap({"Imgs/Reptile.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileStaticUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileStaticDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileStaticLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileStaticRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileMoveUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileMoveDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileMoveLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileMoveRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileShootUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileShootDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileShootLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileShootRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileProcreate", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->AddAni("ReptileFacePlant", 0, 4);
+
+	meshes[(int)MeshType::Boy]->AddTexMap({"Imgs/Boy.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyStaticUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyStaticDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyStaticLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyStaticRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyMoveUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyMoveDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyMoveLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyMoveRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoySlashUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoySlashDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoySlashLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoySlashRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyHeal", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->AddAni("BoyFacePlant", 0, 4);
+
+	meshes[(int)MeshType::Orc]->AddTexMap({"Imgs/Orc.png", Mesh::TexType::Diffuse, 0});
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcStaticUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcStaticDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcStaticLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcStaticRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcMoveUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcMoveDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcMoveLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcMoveRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcSmackUp", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcSmackDown", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcSmackLeft", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcSmackRight", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcShield", 0, 4);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->AddAni("OrcFacePlant", 0, 4);
 }
 
 void MyScene::Update(float dt){
@@ -89,6 +155,10 @@ void MyScene::Update(float dt){
 
 	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->Update(dt);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Reptile])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Boy])->Update(dt);
+	static_cast<SpriteAni*>(meshes[(int)MeshType::Orc])->Update(dt);
 
 	static float polyModeBT = 0.f;
 	if(Key(VK_F2) && polyModeBT <= elapsedTime){
