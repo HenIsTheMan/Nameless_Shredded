@@ -1,10 +1,6 @@
 #pragma once
 
-#include "EntityType.hpp"
-
-struct EntityAttribs final{
-	EntityType type = EntityType::Null;
-};
+#include "EntityAttribs.hpp"
 
 class Entity final{
 public:
