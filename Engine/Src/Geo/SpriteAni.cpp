@@ -1,6 +1,5 @@
 #include "SpriteAni.h"
 #include"../Global/GlobalFuncs.h"
-#include "Mesh.h"
 
 ///Can be improved
 
