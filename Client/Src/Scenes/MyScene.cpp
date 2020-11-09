@@ -187,10 +187,7 @@ void MyScene::Update(float dt){
 	cam.Update(dt, GLFW_KEY_Q, GLFW_KEY_E, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
 	view = glm::mat4();
 	projection = glm::ortho(0.0f, (float)winWidth, 0.0f, (float)winHeight);
-
-	const glm::vec3& camWorldSpacePos = cam.GetPos();
-	const glm::vec3& camFront = cam.CalcFront();
-
+	
 	static_cast<SpriteAni*>(meshes[(int)MeshType::DayBG])->Update(dt);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::NightBG])->Update(dt);
 	static_cast<SpriteAni*>(meshes[(int)MeshType::Skele])->Update(dt);
