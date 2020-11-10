@@ -23,15 +23,15 @@ public:
 	static void SetRender(void (*render)());
 	static void SetPostRender(void (*postRender)());
 private:
-	static void (*im_InCtor)();
-	static void (*im_InDtor)();
-	static void (*im_Init)();
-	static void (*im_FixedUpdate)(float dt);
-	static void (*im_Update)(float dt);
-	static void (*im_LateUpdate)(float dt);
-	static void (*im_PreRender)();
-	static void (*im_Render)();
-	static void (*im_PostRender)();
+	static void (*sm_InCtor)();
+	static void (*sm_InDtor)();
+	static void (*sm_Init)();
+	static void (*sm_FixedUpdate)(float dt);
+	static void (*sm_Update)(float dt);
+	static void (*sm_LateUpdate)(float dt);
+	static void (*sm_PreRender)();
+	static void (*sm_Render)();
+	static void (*sm_PostRender)();
 
 	static void InCtor();
 	static void InDtor();

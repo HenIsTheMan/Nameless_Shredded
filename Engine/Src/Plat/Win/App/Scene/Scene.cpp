@@ -1,101 +1,101 @@
 #include "Scene.h"
 
-void (*Scene::im_InCtor)() = nullptr;
-void (*Scene::im_InDtor)() = nullptr;
-void (*Scene::im_Init)() = nullptr;
-void (*Scene::im_FixedUpdate)(float dt) = nullptr;
-void (*Scene::im_Update)(float dt) = nullptr;
-void (*Scene::im_LateUpdate)(float dt) = nullptr;
-void (*Scene::im_PreRender)() = nullptr;
-void (*Scene::im_Render)() = nullptr;
-void (*Scene::im_PostRender)() = nullptr;
+void (*Scene::sm_InCtor)() = nullptr;
+void (*Scene::sm_InDtor)() = nullptr;
+void (*Scene::sm_Init)() = nullptr;
+void (*Scene::sm_FixedUpdate)(float dt) = nullptr;
+void (*Scene::sm_Update)(float dt) = nullptr;
+void (*Scene::sm_LateUpdate)(float dt) = nullptr;
+void (*Scene::sm_PreRender)() = nullptr;
+void (*Scene::sm_Render)() = nullptr;
+void (*Scene::sm_PostRender)() = nullptr;
 
 void Scene::SetInCtor(void (*inCtor)()){
-	im_InCtor = inCtor;
+	sm_InCtor = inCtor;
 }
 
 void Scene::SetInDtor(void (*inDtor)()){
-	im_InDtor = inDtor;
+	sm_InDtor = inDtor;
 }
 
 void Scene::SetInit(void (*init)()){
-	im_Init = init;
+	sm_Init = init;
 }
 
 void Scene::SetFixedUpdate(void (*fixedUpdate)(float dt)){
-	im_FixedUpdate = fixedUpdate;
+	sm_FixedUpdate = fixedUpdate;
 }
 
 void Scene::SetUpdate(void (*update)(float dt)){
-	im_Update = update;
+	sm_Update = update;
 }
 
 void Scene::SetLateUpdate(void (*lateUpdate)(float dt)){
-	im_LateUpdate = lateUpdate;
+	sm_LateUpdate = lateUpdate;
 }
 
 void Scene::SetPreRender(void (*preRender)()){
-	im_PreRender = preRender;
+	sm_PreRender = preRender;
 }
 
 void Scene::SetRender(void (*render)()){
-	im_Render = render;
+	sm_Render = render;
 }
 
 void Scene::SetPostRender(void (*postRender)()){
-	im_PostRender = postRender;
+	sm_PostRender = postRender;
 }
 
 void Scene::InCtor(){
-	if(im_InCtor){
-		im_InCtor();
+	if(sm_InCtor){
+		sm_InCtor();
 	}
 }
 
 void Scene::InDtor(){
-	if(im_InDtor){
-		im_InDtor();
+	if(sm_InDtor){
+		sm_InDtor();
 	}
 }
 
 void Scene::Init(){
-	if(im_Init){
-		im_Init();
+	if(sm_Init){
+		sm_Init();
 	}
 }
 
 void Scene::FixedUpdate(float dt){
-	if(im_FixedUpdate){
-		im_FixedUpdate(dt);
+	if(sm_FixedUpdate){
+		sm_FixedUpdate(dt);
 	}
 }
 
 void Scene::Update(float dt){
-	if(im_Update){
-		im_Update(dt);
+	if(sm_Update){
+		sm_Update(dt);
 	}
 }
 
 void Scene::LateUpdate(float dt){
-	if(im_LateUpdate){
-		im_LateUpdate(dt);
+	if(sm_LateUpdate){
+		sm_LateUpdate(dt);
 	}
 }
 
 void Scene::PreRender(){
-	if(im_PreRender){
-		im_PreRender();
+	if(sm_PreRender){
+		sm_PreRender();
 	}
 }
 
 void Scene::Render(){
-	if(im_Render){
-		im_Render();
+	if(sm_Render){
+		sm_Render();
 	}
 }
 
 void Scene::PostRender(){
-	if(im_PostRender){
-		im_PostRender();
+	if(sm_PostRender){
+		sm_PostRender();
 	}
 }
